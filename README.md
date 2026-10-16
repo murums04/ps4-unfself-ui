@@ -1,7 +1,5 @@
 # <img src="docs/images/logo.png" alt="" width="64" height="64" align="middle"> &nbsp; murums PS4 Unfself UI
 
-**Download:** [Windows](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe) · [macOS (Apple Silicon)](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64.dmg) · [macOS (Intel)](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64.dmg) · [Linux](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64.deb)
-
 [All downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest) · [Report a bug](https://github.com/murums04/ps4-unfself-ui/issues)
 
 Convert fake-signed PS4 SELF files to ELF. Requires **unencrypted, uncompressed** files; no retail decryption or PKG extraction.
