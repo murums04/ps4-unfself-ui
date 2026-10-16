@@ -1,6 +1,6 @@
 # murums PS4 Unfself UI
 
-A Windows GUI for **ps4_unfself**: turn already fake-signed PS4 SELF executables back into ELF files, without using a terminal or installing Python.
+A desktop GUI for **ps4_unfself**: turn already fake-signed PS4 SELF executables back into ELF files. Windows packages are locally verified; native macOS and Linux builds and checks are prepared in CI and must pass before those packages are released.
 
 Based on [ps4_unfself by SocraticBliss](https://github.com/SocraticBliss/ps4_unfself). This is an independent community project. Original research credits: **SocraticBliss, Znullptr, flatz and zecoxao**.
 
@@ -8,7 +8,7 @@ Based on [ps4_unfself by SocraticBliss](https://github.com/SocraticBliss/ps4_unf
 
 ## Download and run
 
-**[Download for Windows](https://github.com/murums04/ps4-unfself-ui/releases/latest)**
+**[Release downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest)**
 
 Open this repository's **Releases** section and choose:
 
@@ -16,10 +16,18 @@ Open this repository's **Releases** section and choose:
 | --- | --- |
 | `ps4-unfself-ui-0.1.0-windows-x64-setup.exe` | You want a Start menu entry and normal Windows uninstall support. |
 | `ps4-unfself-ui-0.1.0-windows-x64-portable.zip` | You want to extract a folder and run `PS4 Unfself UI.exe` directly. |
+| `ps4-unfself-ui-0.1.0-macos-arm64.dmg` / `-macos-x64.dmg` | On macOS, drag the app to Applications. Separate Apple Silicon and Intel builds. Native verification pending. |
+| `ps4-unfself-ui-0.1.0-macos-arm64-portable.zip` / `-macos-x64-portable.zip` | Extract and run the macOS `.app` bundle. Native verification pending. |
+| `ps4-unfself-ui-0.1.0-linux-x64.deb` | Install with the package manager on Ubuntu 22.04+ or a compatible Debian-based system. Native verification pending. |
+| `ps4-unfself-ui-0.1.0-linux-x64-portable.tar.gz` | Extract the complete folder and run `./ps4-unfself-ui`. Native verification pending. |
 
 The portable ZIP must be extracted completely. Keep the `_internal` folder beside the EXE. Both downloads include Python and Qt. Installation is for the current Windows user and does not require administrator rights. An optional desktop shortcut is offered during setup.
 
-Target: Windows 10 version 1809 or newer, or Windows 11, **x64**. The release was tested on Windows 11 x64; Windows 10 was not tested separately. Executables are unsigned, so Windows may show an unknown-publisher warning. SHA-256 checksums are provided with each release.
+Targets: Windows 10 version 1809+ / Windows 11 x64; macOS 13+ on Apple Silicon or Intel; Linux x64 with glibc 2.35+ and an X11/XWayland desktop, with Ubuntu 22.04 as the build baseline. Only Windows 11 x64 has been tested locally so far. The native workflow tests each macOS architecture and Linux on its own runner; prepared CI is not a claim that these builds have passed.
+
+Windows executables are unsigned. macOS bundles use an ad-hoc signature, with no Apple Developer ID or notarization; Gatekeeper may block a downloaded build until the user allows it in Privacy & Security. SHA-256 checksums accompany each platform's packages. The packaged applications include Python and Qt.
+
+On Linux, install the `.deb` with `sudo apt install ./ps4-unfself-ui-0.1.0-linux-x64.deb` and remove it with `sudo apt remove ps4-unfself-ui`. The package manager installs the required desktop libraries. Portable users need the same dependencies listed in `scripts/package_posix.py`. Use a local output filesystem that supports hard links; an unsupported destination fails without replacing existing files.
 
 ## Convert files
 
@@ -47,7 +55,7 @@ The application runs locally. It has no telemetry, network requests, persistent 
 
 ## Build from source
 
-Use Python **3.12 x64**, PowerShell and Inno Setup (tested with **7.1.0**).
+Use Python **3.12** matching the target architecture. Build on the target operating system; PyInstaller does not cross-compile. On Windows, also use PowerShell and Inno Setup (tested with **7.1.0**).
 
 ```powershell
 python -m venv .venv
@@ -65,9 +73,22 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1 -IsccPath "C:\Path\To
 .venv\Scripts\python.exe scripts\verify_release.py
 ```
 
-`packages/` contains the deliverables. `verify_packages.py` temporarily installs into `.work/package-check/installed`, checks the packaged conversion, repeats setup to test same-version upgrade handling, then uninstalls. It refuses to run if this application is already installed. It checks Start menu and uninstall registration cleanup. Do not run that check while using another installed copy.
+`packages/` contains the deliverables. `verify_packages.py` temporarily installs into a unique `.work/package-check-*/installed` directory, checks the packaged conversion, repeats setup to test same-version upgrade handling, then uninstalls. It refuses to run if this application is already installed. It checks Start menu and uninstall registration cleanup. Do not run that check while using another installed copy.
 
-CI builds and verifies Windows packages and uploads them as workflow artifacts. It **does not publish releases**. Publication is a separate owner action. See [release notes](docs/release-notes.md), [verification](docs/verification.md) and [release checklist](docs/publication.md).
+On macOS or Linux:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-build.txt
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m unfself_ui
+.venv/bin/python scripts/build_posix.py
+.venv/bin/python scripts/verify_posix.py
+```
+
+macOS packaging uses Xcode command-line tools, `codesign`, `ditto` and `hdiutil`. Linux packaging uses `dpkg-deb`; verification also uses `desktop-file-validate`. See `.github/workflows/build.yml` for the Linux desktop dependencies and `xvfb-run` setup on a headless runner. Only disposable Linux CI runners should use `verify_posix.py --install`, which explicitly installs, reinstalls and purges the package using sudo. Normal verification extracts the Debian payload without a system installation.
+
+CI is configured to build and verify Windows x64, Linux x64, macOS arm64 and macOS x64 packages, then upload workflow artifacts. It **does not publish releases**. Native checks include exact fixture reconstruction and the real Qt event loop, not just executable creation. Publication is a separate owner action. See [release notes](docs/release-notes.md), [verification](docs/verification.md) and [release checklist](docs/publication.md).
 
 ### Optional headless conversion
 

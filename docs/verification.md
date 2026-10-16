@@ -2,7 +2,7 @@
 
 Date: 2026-10-16. Platform: Windows 11 Pro x64, build 26300. Python 3.12.14; PySide6 6.10.3.
 
-- 71 automated tests pass for conversion and real Qt event-loop workflows. They include both SELF length conventions for library-version trailers, one-to-fifteen-byte truncation rejection, actual drop events and keyboard activation.
+- 74 automated tests pass on Windows for conversion, real Qt event-loop workflows and platform packaging preparation. They include both SELF length conventions for library-version trailers, one-to-fifteen-byte truncation rejection, actual drop events and keyboard activation, POSIX publication through hard links, Debian staging and a UI event-loop subprocess check.
 - Normal 1020 × 780 and minimum 860 × 660 windows were rendered and visually inspected, including expanded error/details view at 100% and 150% scaling.
 - A user-provided 93,825,704-byte SELF was tested at two paths with identical content. Both conversions produced a 93,667,640-byte ELF matching an existing reference byte-for-byte, including its 2,088-byte library-version trailer.
 - The final packaged executable also reconstructed that input exactly with the development Python removed from PATH.
@@ -17,3 +17,13 @@ Date: 2026-10-16. Platform: Windows 11 Pro x64, build 26300. Python 3.12.14; PyS
 Package tests are rerun against the final artifacts. SHA256SUMS.txt identifies the reviewed downloads. All checks are local; no claim is made that CI has run remotely.
 
 Limitations: no console/emulator launch test, no broad game compatibility claim, no separate Windows 10 machine test, and no code signing certificate. GitHub Actions has not run because publication is not yet authorized.
+
+## Native platform release gates
+
+macOS and Linux support has been added to the shared application and packaging. No native macOS/Linux binaries have been produced or tested on this Windows host; WSL/Docker are unavailable and no Mac is connected. Do not describe the prepared CI jobs as passing builds.
+
+- Linux x64: Ubuntu 22.04 runner; full suite, portable tar.gz, Debian payload, native XCB UI event loop under Xvfb, exact conversion, installation/reinstallation/removal and runtime license collection.
+- macOS arm64 and x64: separate native runners; full suite, `.app` ZIP and DMG, architecture/signature checks, copying from the mounted DMG, native Cocoa event loop and exact conversion.
+- Windows x64: the existing build and package verification remain required after shared code changes.
+
+An independent review of the platform changes found no Critical or Important issue; its shared test run passed 74 tests on Windows. Native execution and visual inspection on macOS/Linux remain pending. The macOS bundles are ad-hoc signed and not notarized.

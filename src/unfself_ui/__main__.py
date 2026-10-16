@@ -14,6 +14,7 @@ def main():
     parser.add_argument("--convert", action="store_true", help="Convert without opening the UI")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--report", type=Path, help="Write a new JSON result file (headless mode)")
+    parser.add_argument("--check-ui", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.convert:
         if not args.files or args.output_dir is None:
@@ -41,6 +42,19 @@ def main():
     window = MainWindow()
     window.add_files(args.files)
     window.show()
+    if args.check_ui:
+        from PySide6.QtCore import QTimer
+
+        def record_ui():
+            try:
+                with args.check_ui.open("x", encoding="utf-8") as report:
+                    json.dump({"visible": window.isVisible(), "width": window.width(),
+                               "height": window.height(), "platform": application.platformName()}, report)
+                application.exit(0)
+            except OSError:
+                application.exit(1)
+
+        QTimer.singleShot(250, record_ui)
     return application.exec()
 
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=PS4 Unfself UI
+Comment=Reconstruct ELF files from fake-signed PS4 SELF files
+Exec=/opt/ps4-unfself-ui/ps4-unfself-ui %F
+Icon=ps4-unfself-ui
+Terminal=false
+Categories=Utility;
+Keywords=PS4;SELF;ELF;unfself;

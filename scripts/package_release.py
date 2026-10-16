@@ -32,10 +32,12 @@ def hash_file(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--iscc", type=Path, required=True)
+    parser.add_argument("--payload", type=Path, default=ROOT / ".work/build/dist/ps4-unfself-ui")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "packages")
     args = parser.parse_args()
-    packages = ROOT / "packages"
-    packages.mkdir(exist_ok=True)
-    payload = ROOT / ".work" / "dist" / "ps4-unfself-ui"
+    packages = args.output_dir.resolve()
+    packages.mkdir(parents=True, exist_ok=True)
+    payload = args.payload.resolve()
     if not (payload / "PS4 Unfself UI.exe").exists():
         raise FileNotFoundError("Build the executable first")
     for name in ("LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "README.md"):

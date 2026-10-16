@@ -1,5 +1,5 @@
 STYLE = """
-QWidget { background: #0c121c; color: #e9eef5; font-family: 'Segoe UI'; font-size: 10pt; }
+QWidget { background: #0c121c; color: #e9eef5; font-family: 'Segoe UI', 'Helvetica Neue', 'Noto Sans', sans-serif; font-size: 10pt; }
 QMainWindow { background: #0c121c; }
 QLabel { background: transparent; }
 QLabel#Brand { color: #57ddc5; font-size: 10pt; font-weight: 600; }
@@ -30,7 +30,7 @@ QHeaderView::section { background: #152235; color: #a7bbce; border: 0; padding: 
 QTableCornerButton::section { background: #152235; border: 0; }
 QProgressBar { background: #1a2a3c; border: 0; border-radius: 3px; min-height: 5px; max-height: 5px; }
 QProgressBar::chunk { background: #57ddc5; border-radius: 3px; }
-QPlainTextEdit { background: #0b1420; color: #adc0d4; border: 1px solid #2b3c50; border-radius: 6px; padding: 8px; font-family: Consolas; font-size: 9pt; }
+QPlainTextEdit { background: #0b1420; color: #adc0d4; border: 1px solid #2b3c50; border-radius: 6px; padding: 8px; font-family: Consolas, Menlo, monospace; font-size: 9pt; }
 QToolTip { background: #203247; color: #e9eef5; border: 1px solid #4b647e; padding: 5px; }
 QScrollBar:vertical { background: #101a27; width: 10px; margin: 0; }
 QScrollBar::handle:vertical { background: #3a5068; min-height: 24px; border-radius: 4px; }
