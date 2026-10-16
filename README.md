@@ -1,6 +1,8 @@
 # <img src="docs/images/logo.png" alt="" width="64" height="64" align="middle"> &nbsp; murums PS4 Unfself UI
 
-**[Download for Windows](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe)** · [Portable ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-portable.zip) · [All downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest) · [Report a bug](https://github.com/murums04/ps4-unfself-ui/issues)
+**Download:** [Windows](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe) · [macOS (Apple Silicon)](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64.dmg) · [macOS (Intel)](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64.dmg) · [Linux](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64.deb)
+
+[All downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest) · [Report a bug](https://github.com/murums04/ps4-unfself-ui/issues)
 
 Convert fake-signed PS4 SELF files to ELF. Requires **unencrypted, uncompressed** files; no retail decryption or PKG extraction.
 
@@ -10,21 +12,22 @@ Community GUI by **murums**, based on [ps4_unfself by SocraticBliss](https://git
 
 ## Download
 
-**[Release downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest)** · 0.1.0
+**Version 0.1.0** · [SHA-256 checksums](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/SHA256SUMS.txt)
 
-| Package | Use |
-| --- | --- |
-| [Windows installer](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe) | Recommended. Install for your account; Start menu shortcut and uninstaller. No admin rights needed. |
-| [Windows portable ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-portable.zip) | Extract the whole ZIP; run `PS4 Unfself UI.exe`. Keep `_internal` beside it. |
-| `macos-arm64.dmg` / `macos-arm64-portable.zip` | **Apple Silicon · pending.** Drag the DMG app to Applications, or extract the ZIP. |
-| `macos-x64.dmg` / `macos-x64-portable.zip` | **Intel Mac · pending.** Same installation options. |
-| `linux-x64.deb` / `linux-x64-portable.tar.gz` | **Linux x64 · pending.** Install the DEB, or extract and run `./ps4-unfself-ui`. |
+| Platform | Installer | Portable |
+| --- | --- | --- |
+| Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-portable.zip) |
+| macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64-portable.zip) |
+| macOS · Intel | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64-portable.zip) |
+| Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64-portable.tar.gz) |
 
-Package names start with `ps4-unfself-ui-0.1.0-` and include Python/Qt. Windows 11 tested; Windows 10 1809+ untested. Windows executables are unsigned; check `SHA256SUMS.txt`.
+Choose an installer for normal use. All packages include Python and Qt. GitHub's **Code → Download ZIP** contains source code.
 
-No Python installation needed. Use the installer or portable package above; GitHub's **Code → Download ZIP** contains source code.
+- **Windows:** run Setup for a per-user installation, shortcuts and uninstaller. For portable use, extract the whole ZIP and run `PS4 Unfself UI.exe`; keep `_internal` beside it.
+- **macOS:** open the DMG and drag the app to Applications, or extract the ZIP. The app is not notarized; macOS may require approval in Privacy & Security.
+- **Linux:** install the DEB, or extract the tar.gz and run `./ps4-unfself-ui`.
 
-macOS/Linux downloads follow after native builds and tests pass. See [platforms and builds](docs/building.md).
+Windows executables are unsigned. See [supported systems and installation details](docs/building.md).
 
 ## Use
 

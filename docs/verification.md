@@ -4,7 +4,7 @@
 
 ## Passed
 
-- **110 tests:** exact reconstruction, equal-sized/reordered segments, both library-trailer length conventions, 1–15-byte truncations, Unicode paths, collisions/cancellation; Qt drop/keyboard/batch workflows; POSIX hard links, Debian staging and GUI startup.
+- **113 tests:** exact reconstruction, equal-sized/reordered segments, both library-trailer length conventions, 1–15-byte truncations, Unicode paths, collisions/cancellation; Qt drop/keyboard/batch workflows; POSIX hard links, Debian staging, Linux library provenance and GUI startup.
 - **Updates:** versions/platforms, exact GitHub URLs, drafts/prereleases, invalid/oversized JSON, HTTP errors/rate limits, responsive timeouts and retries; About links and browser failures. Mouse/keyboard checks retain focus and ignore duplicate requests without opening links. Packaged HTTPS returned “no public release”; future downloads use controlled responses.
 - **UI:** 1020 × 780 and minimum 860 × 660, details/errors at 100%/150%; packaged title bars and About inspected.
 - **Packages:** GUI/conversion without development Python on PATH, invalid-input rejection, per-user install/reinstall/uninstall and shortcut/registry cleanup. No prior release for a cross-version upgrade test.
@@ -25,11 +25,11 @@ This proves reconstruction, not broad compatibility or console/emulator executio
 
 Baseline: upstream `794ed5460ea6d82def0ed661d05d8171fa09ce1b`; format cross-check: [OpenOrbis create-fself](https://github.com/OpenOrbis/create-fself), crediting flatz.
 
-## Pending
+## Native packages
 
-No macOS/Linux binaries or remote CI results yet; no WSL/Docker or Mac on this host.
+GitHub Actions builds and tests Windows x64, Linux x64 and both Mac architectures on native runners. See [build results](https://github.com/murums04/ps4-unfself-ui/actions/workflows/build.yml).
 
-- Linux x64/Ubuntu 22.04: suite, tar.gz/DEB, XCB under Xvfb, conversion, install/reinstall/purge, licenses and TLS.
-- macOS arm64/x64: suite, app ZIP/DMG, architecture/ad-hoc signature, DMG copy, Cocoa GUI, conversion and TLS. No notarization.
+- Linux x64/Ubuntu 22.04: suite, tar.gz/DEB, XCB under Xvfb, exact conversion, input preservation, invalid-file rejection, install/reinstall/purge and runtime licenses.
+- macOS arm64/x64 on macOS 15: suite, app ZIP/DMG, architecture/ad-hoc signature, DMG copy, Cocoa GUI, exact conversion, input preservation and invalid-file rejection. No notarization.
 
-Recheck Windows after shared changes. Publish native artifacts after their checks pass, with owner approval.
+All four jobs must pass on the final release commit. Minimum OS versions describe build baselines; CI does not test every supported OS version or Linux distribution.

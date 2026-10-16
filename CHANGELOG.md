@@ -4,7 +4,8 @@
 
 - UI: file queue, drag-and-drop, progress, cancellation and error details.
 - Conversion: indexed segments, validation and protected originals/outputs.
-- About: GitHub links, release checks and browser downloads; manual installation.
+- About: GitHub/Ko-fi links, release checks and browser downloads; manual installation. Update checks keep keyboard focus.
 - Windows: dark title bars, portable ZIP, per-user installer, source and checksums.
-- macOS/Linux: native packaging and CI prepared; testing pending.
+- macOS: Apple Silicon/Intel app ZIP and DMG, with native tests.
+- Linux: portable tar.gz and DEB, with installation tests and runtime notices.
 

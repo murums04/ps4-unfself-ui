@@ -3,8 +3,8 @@
 | Platform | Baseline | Packages | Status |
 | --- | --- | --- | --- |
 | Windows x64 | Windows 10 1809+ | Setup EXE, portable ZIP | Windows 11 tested; Windows 10 untested |
-| macOS arm64 / x64 | macOS 13+ | App ZIP, DMG | Native builds/tests pending |
-| Linux x64 | glibc 2.35+, X11/XWayland; Ubuntu 22.04 | tar.gz, DEB | Native builds/tests pending |
+| macOS arm64 / x64 | macOS 13+ | App ZIP, DMG | Built and tested on macOS 15, both architectures |
+| Linux x64 | glibc 2.35+, X11/XWayland; Ubuntu 22.04 | tar.gz, DEB | Built and tested on Ubuntu 22.04 |
 
 Windows setup offers a desktop shortcut. On macOS, extract the ZIP or drag the DMG app to Applications. Builds use an ad-hoc signature without Developer ID/notarization; Gatekeeper may require approval in Privacy & Security.
 
