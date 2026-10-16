@@ -1,0 +1,49 @@
+name: Windows build and tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Install Python dependencies
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .venv/Scripts/python.exe -m pip install -r requirements-build.txt
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .tools -Force | Out-Null
+          $setup = Join-Path $PWD '.tools/innosetup-7.1.0-x64.exe'
+          Invoke-WebRequest 'https://github.com/jrsoftware/issrc/releases/download/is-7_1_0/innosetup-7.1.0-x64.exe' -OutFile $setup
+          if ((Get-FileHash -LiteralPath $setup).Hash -ne '0362A383ED217D4C4239B5933866DD96D3EB2102737DA92F80F6057A4B40DF2F') { throw 'Compiler download checksum mismatch' }
+          $compilerDirectory = Join-Path $PWD '.tools/InnoSetup'
+          $arguments = @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CURRENTUSER', '/NOICONS', ('/DIR="' + $compilerDirectory + '"'))
+          $process = Start-Process -FilePath $setup -ArgumentList $arguments -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Compiler installation failed' }
+          if (-not (Test-Path -LiteralPath (Join-Path $compilerDirectory 'ISCC.exe'))) { throw 'Compiler missing after installation' }
+          Remove-Item -LiteralPath $setup
+      - name: Build and test
+        shell: pwsh
+        run: ./scripts/build.ps1
+      - name: Verify distributions
+        shell: pwsh
+        run: |
+          .venv/Scripts/python.exe scripts/verify_packages.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .venv/Scripts/python.exe scripts/verify_release.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ps4-unfself-ui-windows-x64
+          path: packages/*
+          if-no-files-found: error
