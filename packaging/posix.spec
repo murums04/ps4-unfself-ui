@@ -6,8 +6,8 @@ is_mac = sys.platform == 'darwin'
 analysis = Analysis(
     [str(root / 'packaging/launch.py')],
     pathex=[str(root / 'src')],
-    datas=[(str(root / 'assets/icon.svg'), 'assets')],
-    excludes=['tkinter', 'pytest', 'PIL', 'PySide6.QtNetwork', 'PySide6.QtQml',
+    datas=[(str(root / 'assets' / name), 'assets') for name in ('icon.svg', 'github.svg')],
+    excludes=['tkinter', 'pytest', 'PIL', 'PySide6.QtQml',
               'PySide6.QtQuick', 'PySide6.QtTest', 'PySide6.QtOpenGL'],
     noarchive=False,
 )

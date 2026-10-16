@@ -2,7 +2,9 @@
 
 Date: 2026-10-16. Platform: Windows 11 Pro x64, build 26300. Python 3.12.14; PySide6 6.10.3.
 
-- 74 automated tests pass on Windows for conversion, real Qt event-loop workflows and platform packaging preparation. They include both SELF length conventions for library-version trailers, one-to-fifteen-byte truncation rejection, actual drop events and keyboard activation, POSIX publication through hard links, Debian staging and a UI event-loop subprocess check.
+- 104 automated tests pass on Windows for conversion, real Qt event-loop workflows, updates and platform packaging preparation. They include both SELF length conventions for library-version trailers, one-to-fifteen-byte truncation rejection, actual drop events and keyboard activation, POSIX publication through hard links, Debian staging and a UI event-loop subprocess check.
+- Update checks cover numeric versions, platform-specific assets, draft/prerelease exclusion, exact GitHub URL validation, invalid/oversized JSON, missing releases, rate limiting, server errors, retries and a responsive event loop during timeouts. About tests verify both GitHub links, browser-only download/release actions and browser failure feedback.
+- The packaged Windows GUI was visually inspected with its matching native title bars and revised About layout. Its real HTTPS startup request reached GitHub and displayed the expected no-public-release status. Future-release downloads were tested with controlled responses; no future public release exists to download yet.
 - Normal 1020 × 780 and minimum 860 × 660 windows were rendered and visually inspected, including expanded error/details view at 100% and 150% scaling.
 - A user-provided 93,825,704-byte SELF was tested at two paths with identical content. Both conversions produced a 93,667,640-byte ELF matching an existing reference byte-for-byte, including its 2,088-byte library-version trailer.
 - The final packaged executable also reconstructed that input exactly with the development Python removed from PATH.
@@ -27,3 +29,5 @@ macOS and Linux support has been added to the shared application and packaging. 
 - Windows x64: the existing build and package verification remain required after shared code changes.
 
 An independent review of the platform changes found no Critical or Important issue; its shared test run passed 74 tests on Windows. Native execution and visual inspection on macOS/Linux remain pending. The macOS bundles are ad-hoc signed and not notarized.
+
+The subsequent About/update-check review found no Critical or Important issue and independently passed all 104 current tests. QtNetwork and native TLS plugins are included in the new package specifications; their macOS/Linux execution remains part of the native release gates.

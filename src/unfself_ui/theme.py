@@ -4,6 +4,7 @@ QMainWindow { background: #0c121c; }
 QLabel { background: transparent; }
 QLabel#Brand { color: #57ddc5; font-size: 10pt; font-weight: 600; }
 QLabel#Title { font-size: 23pt; font-weight: 700; }
+QLabel#AboutTitle { font-size: 17pt; font-weight: 700; }
 QLabel#Subtitle, QLabel#Hint { color: #98a9bd; }
 QLabel#SectionTitle { font-weight: 600; font-size: 11pt; }
 QLabel#DropTitle { font-size: 13pt; font-weight: 600; }
@@ -21,6 +22,7 @@ QPushButton#Primary:hover { background: #83ead8; }
 QPushButton#Primary:disabled { background: #203e40; color: #70918d; border-color: #203e40; }
 QPushButton#Quiet { background: transparent; border: 1px solid transparent; color: #b2c1d2; }
 QPushButton#Quiet:hover { background: #1b2a3c; }
+QPushButton#IconButton { padding: 7px; }
 QLineEdit { background: #0d1622; border: 1px solid #35485f; border-radius: 6px; padding: 9px 10px; selection-background-color: #237e79; }
 QLineEdit:disabled { color: #77899c; }
 QTableWidget { background: #101a27; alternate-background-color: #131f2e; border: 1px solid #243244; border-radius: 8px; gridline-color: transparent; selection-background-color: #244c59; }

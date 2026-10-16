@@ -22,7 +22,11 @@ This project is a modified implementation by murums. It adds a GUI, validation, 
 
 Qt is dynamically linked in `_internal/PySide6` on Windows/Linux and in the macOS application bundle. Users may replace the shared Qt libraries with ABI-compatible modified builds; the application does not prevent replacement or reverse engineering for debugging those modifications. A modified macOS bundle needs a new local ad-hoc signature. Build instructions and dependency source locations accompany the application. A commercial Qt license is not required for the open-source license option used here.
 
-The `licenses/Qt/` collection includes upstream attribution records, their referenced license texts and Qt license templates. It is intentionally broader than the small QtCore/QtGui/QtWidgets/QtSvg subset used by this application. Not every component listed there is used in each platform build. Linux builds also collect installed package copyrights, versions and source references for bundled system libraries under `licenses/Linux-runtime`; an unknown library owner stops packaging for review.
+The `licenses/Qt/` collection includes upstream attribution records, their referenced license texts and Qt license templates. It is intentionally broader than the QtCore/QtGui/QtWidgets/QtSvg/QtNetwork components used by this application. Not every component listed there is used in each platform build. Linux builds also collect installed package copyrights, versions and source references for bundled system libraries under `licenses/Linux-runtime`; an unknown library owner stops packaging for review.
 
 Corresponding application source is supplied in the versioned source ZIP beside the binary downloads. A public release must provide both together. Source locations for unmodified dependencies are listed above and in their collected notices; the distributor remains responsible for keeping the required source available.
+
+## GitHub logo
+
+`assets/github.svg` is the unmodified white Invertocat from the [GitHub Brand Toolkit](https://brand.github.com/foundations/logo), downloaded from https://brand.github.com/GitHub_Logos.zip. It identifies links to the author's GitHub profile and the original GitHub project. GitHub and the Invertocat are trademarks of GitHub, Inc.; this brand asset is not covered by the application's GPL license. This project is not endorsed by GitHub.
 

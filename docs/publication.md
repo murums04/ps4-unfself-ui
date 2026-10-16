@@ -7,7 +7,7 @@ Proposed destination: **murums04/ps4-unfself-ui**, a new independent **public** 
 - `src/`: converter, Qt worker, UI and entry point.
 - `tests/`: synthetic fixtures and regression/workflow tests only.
 - `scripts/`, `packaging/`, `requirements-build.txt`, `pyproject.toml`: reproducible build and verification inputs.
-- `assets/`: project SVG/ICO; `licenses/`: runtime license and attribution texts.
+- `assets/`: project SVG/ICO/PNG/ICNS and the attributed official GitHub link icon; `licenses/`: runtime license and attribution texts.
 - `.github/workflows/build.yml`: Windows x64, Linux x64 and macOS arm64/x64 build/tests and workflow artifacts; no automatic release publication.
 - README with screenshot and instructions, GPL-3.0 LICENSE, third-party notices, changelog, release notes and verification record.
 
@@ -25,6 +25,8 @@ Exclude local virtual environments, build tools, temporary data, personal inputs
 - Pending native assets: Linux x64 tar.gz and `.deb`; macOS arm64/x64 `.app` ZIPs and DMGs; platform-specific SHA256SUMS files. These files do not exist locally yet.
 
 The README prominently credits and links the original project. A link from the upstream README can be proposed later, with a separately approved contribution; upstream acceptance is not guaranteed.
+
+The update checker targets `murums04/ps4-unfself-ui`. If the approved destination changes, update that constant and the project links before rebuilding. Publish stable tags as `vMAJOR.MINOR.PATCH`, keep the versioned platform asset names, and mark the intended stable release as latest. Drafts/prereleases are not offered. The app only opens browser downloads and never replaces itself.
 
 ## Owner review before upload
 

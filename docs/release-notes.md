@@ -6,6 +6,8 @@ First release candidate of a desktop interface based on SocraticBliss' ps4_unfse
 - Choose an output folder; original files and existing results are preserved.
 - See progress and per-file errors, cancel safely, and open the output folder.
 - Choose a per-user installer or portable ZIP. No separate Python installation is needed.
+- Use the reorganized About dialog for author/upstream links and update checks. Windows title bars match the dark theme.
+- Get a notice when a newer stable GitHub release is available. Download the matching portable archive in your browser or open the release page for installers; installation remains manual.
 - Native packaging is prepared for macOS Apple Silicon/Intel (`.app` ZIP and DMG) and Linux x64 (portable tar.gz and `.deb`). These artifacts must pass their native CI checks before publication; they have not been built locally.
 
 Requires Windows x64. Windows 11 tested; Windows 10 1809+ is the dependency baseline, not separately tested. Only unencrypted, uncompressed fake-signed SELF files with supported stripped ELF64 layouts are accepted. This is not a retail decryption tool. A user-supplied SELF matched its existing ELF reference byte-for-byte; broader compatibility is not guaranteed. Binaries are unsigned.

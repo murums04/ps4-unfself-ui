@@ -51,7 +51,13 @@ Input files are opened read-only. Existing outputs are preserved: `eboot.elf`, `
 
 The original Python script provides the format baseline. This version separates the converter from the interface, maps data using the embedded segment index, validates file bounds and writes outputs without overwriting existing files. Equal-sized segments are deliberately tested because size-only matching can select the wrong bytes.
 
-The application runs locally. It has no telemetry, network requests, persistent settings, updater, or shell/file-type associations.
+File conversion runs locally. There is no telemetry, file upload, persistent setting or shell/file-type association.
+
+## Update checks
+
+The GUI checks this repository's latest stable GitHub release once on launch. **About → Check now** repeats the check. An available update adds a notice in the main window. This uses an anonymous HTTPS request to the [GitHub Releases API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release); GitHub receives the usual connection metadata, but no file names or file contents.
+
+**Download portable** opens the archive matching your operating system and architecture in your browser. Extract it to a new folder. **View release** opens the release page for notes, checksums and installers. Downloads are user-initiated; the app does not install or replace itself. Offline checks fail quietly and can be retried in About. Before the first public release, About shows that no public release is available. Headless conversions do not make update requests.
 
 ## Build from source
 

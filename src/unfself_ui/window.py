@@ -4,19 +4,17 @@ from PySide6.QtCore import Qt, QUrl, Signal
 from PySide6.QtGui import QColor, QDesktopServices, QIcon
 from PySide6.QtWidgets import (
     QAbstractItemView, QFileDialog, QFrame, QHBoxLayout, QHeaderView,
-    QLabel, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QProgressBar,
+    QLabel, QLineEdit, QMainWindow, QPlainTextEdit, QProgressBar,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
 from . import __version__
+from .about import AboutDialog
+from .assets import asset_path
 from .jobs import ConversionWorker
+from .native_theme import install_native_theme
 from .theme import STYLE
-
-
-def asset_path(name: str) -> Path:
-    import sys
-    root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
-    return root / "assets" / name
+from .updates import UpdateChecker
 
 
 def label(text: str, name: str = "", wrap=False) -> QLabel:
@@ -71,6 +69,8 @@ class DropArea(QFrame):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        install_native_theme()
+        self.update_checker = UpdateChecker(self)
         self.sources: list[Path] = []
         self.worker = None
         self.close_after_cancel = False
@@ -81,6 +81,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(860, 660)
         self.setStyleSheet(STYLE)
         self.build_interface()
+        self.update_checker.changed.connect(self.refresh_update_notice)
         self.update_actions()
 
     def build_interface(self):
@@ -96,6 +97,10 @@ class MainWindow(QMainWindow):
         identity.addWidget(label("PS4 Unfself", "Title"))
         identity.addWidget(label("Turn fake-signed SELF files back into ELF files.", "Subtitle"))
         header.addLayout(identity, 1)
+        self.update_notice = QPushButton("Update available")
+        self.update_notice.clicked.connect(self.show_about)
+        self.update_notice.hide()
+        header.addWidget(self.update_notice, 0, Qt.AlignmentFlag.AlignTop)
         about = QPushButton("About")
         about.setObjectName("Quiet")
         about.clicked.connect(self.show_about)
@@ -346,13 +351,12 @@ class MainWindow(QMainWindow):
             self.status_label.setText("Could not open the folder. Copy its path from the field above.")
 
     def show_about(self):
-        QMessageBox.about(self, "About PS4 Unfself UI",
-            f"<h3>murums PS4 Unfself UI {__version__}</h3>"
-            "<p>A desktop interface for restoring ELF files from unencrypted, uncompressed PS4 SELF files.</p>"
-            "<p>Based on <a href='https://github.com/SocraticBliss/ps4_unfself'>ps4_unfself by SocraticBliss</a>. "
-            "Original research: Znullptr, flatz and zecoxao.</p>"
-            "<p>GPL-3.0. Built with Python and Qt for Python. See THIRD_PARTY_NOTICES.md and licenses/ in the application folder.</p>"
-            "<p>No decryption, network uploads or automatic updates.</p>")
+        dialog = AboutDialog(self.update_checker, self)
+        dialog.exec()
+        dialog.deleteLater()
+
+    def refresh_update_notice(self):
+        self.update_notice.setVisible(self.update_checker.release is not None)
 
     def closeEvent(self, event):
         if self.worker is not None:

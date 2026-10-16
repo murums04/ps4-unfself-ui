@@ -55,6 +55,8 @@ def main():
                 application.exit(1)
 
         QTimer.singleShot(250, record_ui)
+    else:
+        window.update_checker.start_automatic_check()
     return application.exec()
 
 

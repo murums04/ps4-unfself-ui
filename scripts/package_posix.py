@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from unfself_ui import __version__
 
 LINUX_DEPENDENCIES = (
-    "libc6 (>= 2.35), libstdc++6, libgcc-s1, libglib2.0-0, libgl1, libegl1, libopengl0, "
+    "libc6 (>= 2.35), libstdc++6, libgcc-s1, libglib2.0-0, libgl1, libegl1, libopengl0, libssl3, ca-certificates, "
     "libdbus-1-3, libfontconfig1, libfreetype6, libx11-6, libx11-xcb1, libxext6, "
     "libxcb1, libxcb-cursor0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, "
     "libxcb-randr0, libxcb-render0, libxcb-render-util0, libxcb-shape0, libxcb-shm0, "
