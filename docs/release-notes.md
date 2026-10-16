@@ -1,15 +1,15 @@
 # murums PS4 Unfself UI 0.1.0
 
-First release candidate of a desktop interface based on SocraticBliss' ps4_unfself.
+**[Windows installer](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.0/ps4-unfself-ui-0.1.0-windows-x64-setup.exe)** · [Portable ZIP](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.0/ps4-unfself-ui-0.1.0-windows-x64-portable.zip)
 
-- Add files by drag-and-drop and convert multiple files in one run.
-- Choose an output folder; original files and existing results are preserved.
-- See progress and per-file errors, cancel safely, and open the output folder.
-- Choose a per-user installer or portable ZIP. No separate Python installation is needed.
-- Use the reorganized About dialog for author/upstream links and update checks. Windows title bars match the dark theme.
-- Get a notice when a newer stable GitHub release is available. Download the matching portable archive in your browser or open the release page for installers; installation remains manual.
-- Native packaging is prepared for macOS Apple Silicon/Intel (`.app` ZIP and DMG) and Linux x64 (portable tar.gz and `.deb`). These artifacts must pass their native CI checks before publication; they have not been built locally.
+Desktop GUI based on [SocraticBliss' ps4_unfself](https://github.com/SocraticBliss/ps4_unfself).
 
-Requires Windows x64. Windows 11 tested; Windows 10 1809+ is the dependency baseline, not separately tested. Only unencrypted, uncompressed fake-signed SELF files with supported stripped ELF64 layouts are accepted. This is not a retail decryption tool. A user-supplied SELF matched its existing ELF reference byte-for-byte; broader compatibility is not guaranteed. Binaries are unsigned.
+- Drag-and-drop batches, progress, errors and cancellation; preserve inputs and existing outputs.
+- Dark UI with matching Windows title bars, GitHub links and update checks. Download through your browser; install yourself.
+- Windows installer and portable ZIP with Python/Qt included; source ZIP and SHA-256 checksums.
 
-Locally verified downloads: Windows setup EXE, portable ZIP, corresponding source ZIP and SHA256SUMS.txt. Native platform downloads and their separate checksum manifests are added only after successful native verification. All source and credits are included under GPL-3.0 with third-party runtime notices.
+Choose the installer for normal use. For portable use, extract the whole ZIP and run `PS4 Unfself UI.exe`. GitHub's **Source code** downloads do not contain the app.
+
+Windows 11 x64 tested. Windows 10 1809+ untested; binaries unsigned. Requires unencrypted, uncompressed fake-signed SELF files with supported stripped ELF64 layouts. No retail decryption.
+
+macOS arm64/x64 and Linux x64 builds await native verification. See [test coverage](https://github.com/murums04/ps4-unfself-ui/blob/v0.1.0/docs/verification.md) and [platforms](https://github.com/murums04/ps4-unfself-ui/blob/v0.1.0/docs/building.md). GPL-3.0; bundled dependency notices included.

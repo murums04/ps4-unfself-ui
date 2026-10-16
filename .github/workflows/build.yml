@@ -9,6 +9,7 @@ permissions:
 jobs:
   windows:
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -47,6 +48,7 @@ jobs:
           name: ps4-unfself-ui-windows-x64
           path: packages/*
           if-no-files-found: error
+          retention-days: 1
   native:
     strategy:
       fail-fast: false
@@ -59,6 +61,7 @@ jobs:
           - runner: macos-15-intel
             target: macos-x64
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
     env:
       MACOSX_DEPLOYMENT_TARGET: '13.0'
     steps:
@@ -90,3 +93,4 @@ jobs:
           name: ps4-unfself-ui-${{ matrix.target }}
           path: packages/*
           if-no-files-found: error
+          retention-days: 1

@@ -1,4 +1,3 @@
-import ctypes
 import json
 import os
 import shutil
@@ -39,22 +38,6 @@ def wait_until(condition, timeout=20):
     raise AssertionError("Timed out while waiting for the packaged application")
 
 
-def application_window(process):
-    windows = []
-    callback_type = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
-
-    @callback_type
-    def callback(handle, parameter):
-        pid = ctypes.c_ulong()
-        ctypes.windll.user32.GetWindowThreadProcessId(ctypes.c_void_p(handle), ctypes.byref(pid))
-        if pid.value == process.pid and ctypes.windll.user32.IsWindowVisible(ctypes.c_void_p(handle)):
-            windows.append(handle)
-        return True
-
-    ctypes.windll.user32.EnumWindows(callback, 0)
-    return windows[0] if windows else None
-
-
 def verify_executable(executable, workspace, tag):
     environment = os.environ.copy()
     for key in ("PYTHONPATH", "PYTHONHOME", "QT_PLUGIN_PATH", "QT_QPA_PLATFORM", "QT_QPA_PLATFORM_PLUGIN_PATH"):
@@ -80,19 +63,12 @@ def verify_executable(executable, workspace, tag):
     assert result.returncode == 1
     assert json.loads(invalid_report.read_text())[0]["status"] == "failed"
     assert not (folder / "invalid.elf").exists()
-    process = subprocess.Popen([str(executable)], cwd=folder, env=environment)
-    try:
-        wait_until(lambda: application_window(process))
-        handle = application_window(process)
-        title = ctypes.create_unicode_buffer(256)
-        ctypes.windll.user32.GetWindowTextW(ctypes.c_void_p(handle), title, 256)
-        assert "PS4 Unfself UI" in title.value, f"Unexpected application window: {title.value!r}"
-        ctypes.windll.user32.PostMessageW(ctypes.c_void_p(handle), 0x10, 0, 0)
-        assert process.wait(timeout=20) == 0
-    finally:
-        if process.poll() is None:
-            process.terminate()
-            process.wait(timeout=10)
+    ui_report = folder / "ui.json"
+    subprocess.run([str(executable), "--check-ui", str(ui_report)], cwd=folder,
+                   env=environment, check=True, timeout=60)
+    ui = json.loads(ui_report.read_text())
+    assert ui["visible"] and ui["platform"] == "windows"
+    assert ui["width"] >= 860 and ui["height"] >= 660
     print(f"{tag}: GUI and exact conversion verified without development PATH", flush=True)
 
 

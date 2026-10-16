@@ -12,8 +12,8 @@ from unfself_ui import __version__
 
 SOURCE_DIRECTORIES = ("src", "tests", "scripts", "packaging", "assets", "licenses", ".github")
 SOURCE_FILES = ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", ".gitignore",
-                "pyproject.toml", "requirements-build.txt", "docs/images/app.png",
-                "docs/release-notes.md", "docs/verification.md", "docs/publication.md")
+                "pyproject.toml", "requirements-build.txt", "docs/images/app.png", "docs/images/logo.png",
+                "docs/release-notes.md", "docs/verification.md", "docs/publication.md", "docs/building.md")
 
 
 def source_files():
@@ -44,9 +44,10 @@ def main():
         shutil.copyfile(ROOT / name, payload / name)
     shutil.copytree(ROOT / "licenses", payload / "licenses", dirs_exist_ok=True)
     (payload / "docs" / "images").mkdir(parents=True, exist_ok=True)
-    for name in ("release-notes.md", "verification.md", "publication.md"):
+    for name in ("release-notes.md", "verification.md", "publication.md", "building.md"):
         shutil.copyfile(ROOT / "docs" / name, payload / "docs" / name)
     shutil.copyfile(ROOT / "docs" / "images" / "app.png", payload / "docs" / "images" / "app.png")
+    shutil.copyfile(ROOT / "docs" / "images" / "logo.png", payload / "docs" / "images" / "logo.png")
     prefix = f"ps4-unfself-ui-{__version__}"
     with zipfile.ZipFile(packages / f"{prefix}-windows-x64-portable.zip", "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(payload.rglob("*")):

@@ -32,7 +32,7 @@ def main():
                          "licenses/Qt/qtbase/LICENSES/LGPL-3.0-only.txt", "_internal/python312.dll",
                          "_internal/PySide6/Qt6Core.dll", "_internal/PySide6/plugins/platforms/qwindows.dll",
                          "_internal/PySide6/Qt6Network.dll", "_internal/PySide6/plugins/tls/qschannelbackend.dll",
-                         "_internal/assets/github.svg"):
+                         "_internal/assets/github.svg", "_internal/assets/kofi.png"):
             assert f"ps4-unfself-ui/{required}" in names, f"Missing runtime file: {required}"
         assert not any(name.lower().endswith((".self", ".elf", ".sprx", ".log")) for name in names)
         for name in ("LICENSE", "THIRD_PARTY_NOTICES.md", "README.md"):

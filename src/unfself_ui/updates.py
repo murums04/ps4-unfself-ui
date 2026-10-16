@@ -76,11 +76,11 @@ class UpdateChecker(QObject):
         self.body = bytearray()
         self.failure_message = ""
         self.state = "idle"
-        self.message = "Check for a newer release on GitHub."
+        self.message = "Check GitHub for updates."
         self.release = None
         self.deadline = QTimer(self)
         self.deadline.setSingleShot(True)
-        self.deadline.timeout.connect(lambda: self.abort("Update check timed out. Try again later."))
+        self.deadline.timeout.connect(lambda: self.abort("Check timed out. Retry later."))
         self.startup_timer = QTimer(self)
         self.startup_timer.setSingleShot(True)
         self.startup_timer.timeout.connect(self.check)
@@ -118,7 +118,7 @@ class UpdateChecker(QObject):
     def read_response(self):
         self.body.extend(bytes(self.reply.read(MAX_RESPONSE_BYTES + 1 - len(self.body))))
         if len(self.body) > MAX_RESPONSE_BYTES:
-            self.abort("GitHub returned an oversized response. Try again later.")
+            self.abort("GitHub response too large. Retry later.")
 
     def abort(self, message):
         if self.reply is not None:
@@ -135,20 +135,20 @@ class UpdateChecker(QObject):
         if self.failure_message:
             self.set_status("error", self.failure_message)
         elif status == 404:
-            self.set_status("unpublished", "No public release is available yet.")
+            self.set_status("unpublished", "No public release yet.")
         elif status in (403, 429):
-            self.set_status("error", "GitHub is limiting requests. Try again later.")
+            self.set_status("error", "GitHub rate limit. Retry later.")
         elif status != 200 or error != QNetworkReply.NetworkError.NoError:
-            self.set_status("error", "Could not reach GitHub. Check your connection and try again.")
+            self.set_status("error", "Cannot reach GitHub. Check your connection; retry.")
         else:
             try:
                 release = parse_release(json.loads(self.body), __version__)
             except (ValueError, UnicodeError, RecursionError):
-                self.set_status("error", "Could not read the GitHub release. Try again later.")
+                self.set_status("error", "Invalid GitHub release data. Retry later.")
             else:
                 self.release = release
                 if release:
-                    self.set_status("available", f"Version {release.version} is available.")
+                    self.set_status("available", f"Update available: {release.version}")
                 else:
-                    self.set_status("current", "You are using the latest stable version.")
+                    self.set_status("current", "Up to date (stable).")
         self.body.clear()

@@ -135,7 +135,7 @@ def test_keyboard_can_start_conversion(window, application, tmp_path):
     assert (tmp_path / "sample.elf").read_bytes() == expected
 
 
-def test_about_github_icons_open_owner_and_original(application, monkeypatch):
+def test_about_icons_open_their_links_only_on_click(application, monkeypatch):
     from PySide6.QtGui import QDesktopServices
     from unfself_ui.about import AboutDialog
     opened = []
@@ -143,12 +143,15 @@ def test_about_github_icons_open_owner_and_original(application, monkeypatch):
     dialog = AboutDialog()
     dialog.show()
     application.processEvents()
-    for button in (dialog.owner_link, dialog.upstream_link):
+    assert opened == []
+    assert not dialog.kofi_link.autoDefault()
+    for button in (dialog.owner_link, dialog.upstream_link, dialog.kofi_link):
         assert not button.icon().isNull() and not button.text()
         assert button.accessibleName() and button.toolTip()
         QTest.mouseClick(button, Qt.MouseButton.LeftButton)
     dialog.close()
-    assert opened == ["https://github.com/murums04", "https://github.com/SocraticBliss/ps4_unfself"]
+    assert opened == ["https://github.com/murums04", "https://github.com/SocraticBliss/ps4_unfself",
+                      "https://ko-fi.com/murums"]
 
 
 def test_update_notice_opens_download_and_release_links(window, application, monkeypatch):
@@ -183,4 +186,6 @@ def test_about_reports_browser_failure(application, monkeypatch):
     dialog.show()
     QTest.mouseClick(dialog.owner_link, Qt.MouseButton.LeftButton)
     assert "Could not open your browser" in dialog.update_status.text()
+    QTest.mouseClick(dialog.kofi_link, Qt.MouseButton.LeftButton)
+    assert "https://ko-fi.com/murums" in dialog.update_status.text()
     dialog.close()

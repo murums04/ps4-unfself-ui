@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("--output-dir", type=Path, default=ROOT / "docs" / "images")
+parser.add_argument("--work-dir", type=Path, default=ROOT / ".work" / "ui-demo")
 args = parser.parse_args()
 images = args.output_dir.resolve()
 sys.path.insert(0, str(ROOT / "src"))
@@ -15,8 +16,9 @@ sys.path.insert(0, str(ROOT))
 from PySide6.QtWidgets import QApplication
 from tests.fixtures import write_fixture
 from unfself_ui.window import MainWindow
+from unfself_ui.about import AboutDialog
 
-demo = ROOT / ".work" / "ui-demo"
+demo = args.work_dir.resolve()
 demo.mkdir(parents=True, exist_ok=True)
 output = demo / "ELF output"
 output.mkdir(exist_ok=True)
@@ -39,5 +41,10 @@ window.resize(window.minimumSize())
 window.toggle_details()
 app.processEvents()
 window.grab().save(str(images / "ui-minimum.png"))
+about = AboutDialog(window.update_checker, window)
+about.show()
+app.processEvents()
+about.grab().save(str(images / "about.png"))
+about.close()
 window.close()
 print("UI screenshots captured from completed synthetic conversions")

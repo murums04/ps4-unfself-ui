@@ -23,7 +23,7 @@ class ConversionWorker(QThread):
     def run(self):
         for row, source in enumerate(self.sources):
             if self.stop_requested.is_set():
-                self.file_finished.emit(row, "Cancelled", "Not processed. You can run this file again.")
+                self.file_finished.emit(row, "Cancelled", "Not processed. Run again to retry.")
                 continue
             self.file_started.emit(row)
             last_percent = -1
@@ -39,7 +39,7 @@ class ConversionWorker(QThread):
                 output = convert_file(source, self.output_dir, self.stop_requested.is_set, report_progress)
                 self.file_finished.emit(row, "Converted", str(output))
             except ConversionCancelled:
-                self.file_finished.emit(row, "Cancelled", "Cancelled. No incomplete output was kept.")
+                self.file_finished.emit(row, "Cancelled", "Cancelled; partial output removed.")
             except ConversionError as error:
                 self.file_finished.emit(row, "Failed", str(error))
             except Exception as error:

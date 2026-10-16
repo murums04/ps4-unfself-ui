@@ -36,8 +36,8 @@ class DropArea(QFrame):
         layout.addWidget(label("↓", "DropIcon"))
         text = QVBoxLayout()
         text.setSpacing(3)
-        text.addWidget(label("Drop your SELF files here", "DropTitle"))
-        text.addWidget(label("Or choose files · .self, .bin, .sprx, .elf", "Hint"))
+        text.addWidget(label("Drop SELF files", "DropTitle"))
+        text.addWidget(label(".self · .bin · .sprx · .elf", "Hint"))
         layout.addLayout(text, 1)
         self.add_button = QPushButton("Add files…")
         self.add_button.setAccessibleName("Add input files")
@@ -93,9 +93,9 @@ class MainWindow(QMainWindow):
         header = QHBoxLayout()
         identity = QVBoxLayout()
         identity.setSpacing(2)
-        identity.addWidget(label("murums  /  FILE TOOLS", "Brand"))
-        identity.addWidget(label("PS4 Unfself", "Title"))
-        identity.addWidget(label("Turn fake-signed SELF files back into ELF files.", "Subtitle"))
+        identity.addWidget(label("FILE TOOLS", "Brand"))
+        identity.addWidget(label("murums PS4 Unfself UI", "Title"))
+        identity.addWidget(label("Convert fake-signed SELF to ELF.", "Subtitle"))
         header.addLayout(identity, 1)
         self.update_notice = QPushButton("Update available")
         self.update_notice.clicked.connect(self.show_about)
@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
         output_layout.addWidget(output_label)
         output_row = QHBoxLayout()
         self.output_edit = QLineEdit()
-        self.output_edit.setPlaceholderText("Choose where the ELF files will be saved")
+        self.output_edit.setPlaceholderText("Choose an ELF output folder")
         self.output_edit.setAccessibleName("Output folder")
         output_label.setBuddy(self.output_edit)
         self.output_edit.textChanged.connect(self.update_actions)
@@ -174,7 +174,7 @@ class MainWindow(QMainWindow):
         self.browse_button.clicked.connect(self.choose_output)
         output_row.addWidget(self.browse_button)
         output_layout.addLayout(output_row)
-        output_layout.addWidget(label("Originals stay untouched. Existing names get a numbered suffix.", "Hint"))
+        output_layout.addWidget(label("Originals unchanged. Duplicate outputs numbered.", "Hint"))
         layout.addWidget(panel)
 
         self.progress = QProgressBar()
@@ -202,7 +202,7 @@ class MainWindow(QMainWindow):
         actions.addWidget(self.cancel_button)
         actions.addWidget(self.convert_button)
         layout.addLayout(actions)
-        self.status_label = label("Add files to get started. Already fake-signed files only; no decryption.", "Hint", True)
+        self.status_label = label("Add fake-signed files. No decryption.", "Hint", True)
         layout.addWidget(self.status_label)
         QWidget.setTabOrder(self.add_button, self.table)
         QWidget.setTabOrder(self.table, self.remove_button)
@@ -238,8 +238,8 @@ class MainWindow(QMainWindow):
         if self.sources and not self.output_edit.text():
             self.output_edit.setText(str(self.sources[0].parent))
         self.queue_label.setText(f"Files · {len(self.sources)}")
-        self.status_label.setText(f"{len(self.sources)} file(s) in the queue." +
-                                  (f" {skipped} duplicate(s) or non-file item(s) skipped." if skipped else ""))
+        self.status_label.setText(f"Queued: {len(self.sources)}" +
+                                  (f" · Skipped: {skipped} duplicates/non-files" if skipped else ""))
         self.update_actions()
 
     def remove_selected(self):
@@ -259,7 +259,7 @@ class MainWindow(QMainWindow):
         self.details.clear()
         self.progress.setValue(0)
         self.queue_label.setText("Files · 0")
-        self.status_label.setText("Add files to get started.")
+        self.status_label.setText("Add files.")
         self.update_actions()
 
     def choose_output(self):
@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
         if self.worker is not None:
             self.worker.cancel()
             self.cancel_button.setEnabled(False)
-            self.status_label.setText("Cancelling… Completed files will be kept.")
+            self.status_label.setText("Cancelling… Keeping completed files.")
 
     def toggle_details(self):
         visible = not self.details.isVisible()
@@ -348,7 +348,7 @@ class MainWindow(QMainWindow):
 
     def open_output(self):
         if not QDesktopServices.openUrl(QUrl.fromLocalFile(self.output_edit.text())):
-            self.status_label.setText("Could not open the folder. Copy its path from the field above.")
+            self.status_label.setText("Could not open folder. Copy the output path above.")
 
     def show_about(self):
         dialog = AboutDialog(self.update_checker, self)

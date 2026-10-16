@@ -8,12 +8,12 @@ from .converter import ConversionError, convert_file
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Reconstruct ELF files from fake-signed PS4 SELF files.")
+    parser = argparse.ArgumentParser(description="Convert fake-signed PS4 SELF to ELF.")
     parser.add_argument("files", nargs="*", type=Path)
     parser.add_argument("--version", action="version", version=__version__)
-    parser.add_argument("--convert", action="store_true", help="Convert without opening the UI")
+    parser.add_argument("--convert", action="store_true", help="Convert without the UI")
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--report", type=Path, help="Write a new JSON result file (headless mode)")
+    parser.add_argument("--report", type=Path, help="New JSON report path (--convert)")
     parser.add_argument("--check-ui", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.convert:

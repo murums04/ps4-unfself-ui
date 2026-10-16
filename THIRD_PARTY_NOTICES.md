@@ -30,3 +30,7 @@ Corresponding application source is supplied in the versioned source ZIP beside 
 
 `assets/github.svg` is the unmodified white Invertocat from the [GitHub Brand Toolkit](https://brand.github.com/foundations/logo), downloaded from https://brand.github.com/GitHub_Logos.zip. It identifies links to the author's GitHub profile and the original GitHub project. GitHub and the Invertocat are trademarks of GitHub, Inc.; this brand asset is not covered by the application's GPL license. This project is not endorsed by GitHub.
 
+## Ko-fi logo
+
+`assets/kofi.png` is the cup logo from the [Ko-fi Creator Kit](https://more.ko-fi.com/brand-assets), converted from AVIF to PNG without changing its design. [Original asset](https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion.avif). It links to the author's Ko-fi page. The logo belongs to Ko-fi and is not covered by the application's GPL license; use follows [Ko-fi's brand guidelines](https://help.ko-fi.com/hc/en-us/articles/360007169493-Can-I-use-the-Ko-fi-logo-to-promote-my-page).
+

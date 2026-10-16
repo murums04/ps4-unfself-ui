@@ -28,7 +28,8 @@ def copy_notices(destination):
     images = destination / "docs/images"
     images.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / "docs/images/app.png", images / "app.png")
-    for name in ("release-notes.md", "verification.md", "publication.md"):
+    shutil.copyfile(ROOT / "docs/images/logo.png", images / "logo.png")
+    for name in ("release-notes.md", "verification.md", "publication.md", "building.md"):
         shutil.copyfile(ROOT / "docs" / name, destination / "docs" / name)
 
 
@@ -41,8 +42,8 @@ def stage_debian(payload, destination):
         "Maintainer: murums <208348100+murums04@users.noreply.github.com>\n"
         "Section: utils\nPriority: optional\nHomepage: https://github.com/murums04/ps4-unfself-ui\n"
         f"Depends: {LINUX_DEPENDENCIES}\n"
-        "Description: Desktop interface for PS4 SELF to ELF reconstruction\n"
-        " Converts already fake-signed, unencrypted and uncompressed SELF files locally.\n",
+        "Description: Convert fake-signed PS4 SELF to ELF\n"
+        " Requires unencrypted, uncompressed SELF files. No file uploads.\n",
         encoding="utf-8")
     desktop = destination / "usr/share/applications"
     desktop.mkdir(parents=True)

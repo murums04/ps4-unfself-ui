@@ -45,23 +45,23 @@ def read_at(stream: BinaryIO, offset: int, size: int, file_size: int) -> bytes:
     stream.seek(offset)
     data = stream.read(size)
     if len(data) != size:
-        raise ConversionError("The input was truncated or changed while being read.")
+        raise ConversionError("Input truncated or changed while reading.")
     return data
 
 
 def inspect_layout(stream: BinaryIO, file_size: int) -> Layout:
     header = read_at(stream, 0, 32, file_size)
     if header[:4] == b"\x7fELF":
-        raise ConversionError("This is already an ELF file. No conversion is needed.")
+        raise ConversionError("File is already an ELF; no conversion needed.")
     if header[:4] != SELF_MAGIC:
-        raise ConversionError("Not a PS4 SELF file. Select an already fake-signed executable.")
+        raise ConversionError("Not a PS4 SELF. Choose a fake-signed file.")
     if header[6] != 1:
         raise ConversionError("Only little-endian SELF files are supported.")
     header_size, metadata_size = struct.unpack_from("<HH", header, 12)
     declared_file_size = struct.unpack_from("<Q", header, 16)[0]
     entry_count = struct.unpack_from("<H", header, 24)[0]
     if not 1 <= entry_count <= 4096:
-        raise ConversionError("The SELF entries count is invalid or unsupported.")
+        raise ConversionError("Invalid or unsupported SELF entries count.")
     elf_offset = 32 + entry_count * 32
     elf_header = read_at(stream, elf_offset, 64, file_size)
     if elf_header[:7] != b"\x7fELF\x02\x01\x01":
@@ -73,7 +73,7 @@ def inspect_layout(stream: BinaryIO, file_size: int) -> Layout:
     if ph_offset != 64 or ph_size != 56 or not 1 <= ph_count <= 4096:
         raise ConversionError("Unsupported ELF program-header layout.")
     if fields[6] or fields[12] or fields[13]:
-        raise ConversionError("ELF section tables are not supported; use a stripped fake-signed SELF.")
+        raise ConversionError("Unsupported ELF section tables. Use a stripped fake-signed SELF.")
     header_end = elf_offset + 64 + ph_count * 56
     if header_size < header_end or header_size + metadata_size > file_size:
         raise ConversionError("The SELF header or metadata extends outside the input file.")
@@ -86,9 +86,9 @@ def inspect_layout(stream: BinaryIO, file_size: int) -> Layout:
         properties, offset, size, memory_size = struct.unpack(
             "<QQQQ", read_at(stream, 32 + index * 32, 32, file_size))
         if properties & 2:
-            raise ConversionError("The SELF contains encrypted data. This tool does not decrypt files.")
+            raise ConversionError("SELF contains encrypted data; decryption is unsupported.")
         if properties & 8:
-            raise ConversionError("The SELF contains compressed data, which this version does not support.")
+            raise ConversionError("SELF contains unsupported compressed data.")
         if offset + size > file_size or (size and offset < header_size + metadata_size):
             raise ConversionError("A SELF segment points outside its data area.")
         data_end = max(data_end, offset + size)
@@ -203,7 +203,7 @@ def convert_file(
                     raise ConversionCancelled()
                 final_stat = os.fstat(input_file.fileno())
                 if (initial_stat.st_size, initial_stat.st_mtime_ns) != (final_stat.st_size, final_stat.st_mtime_ns):
-                    raise ConversionError("The input changed during conversion. Try again with a stable copy.")
+                    raise ConversionError("Input changed during conversion. Retry with a stable copy.")
                 output.seek(0)
                 output.write(layout.headers)
                 output.flush()

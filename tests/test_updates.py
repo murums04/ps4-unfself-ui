@@ -4,7 +4,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Qt
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication
 
@@ -84,10 +84,11 @@ def application():
 
 @pytest.fixture
 def server():
-    response = {"status": 200, "body": json.dumps(release_data()).encode(), "delay": 0}
+    response = {"status": 200, "body": json.dumps(release_data()).encode(), "delay": 0, "requests": 0}
 
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
+            response["requests"] += 1
             time.sleep(response["delay"])
             try:
                 self.send_response(response["status"])
@@ -158,3 +159,41 @@ def test_timeout_leaves_event_loop_responsive(application, server):
     assert ticks and checker.state == "error"
     assert "timed out" in checker.message
     checker.deleteLater()
+
+
+@pytest.mark.parametrize("status", [200, 404, 500])
+@pytest.mark.parametrize("activation", ["mouse", "keyboard"])
+def test_about_check_keeps_focus_without_opening_links(application, server, monkeypatch, status, activation):
+    from PySide6.QtGui import QDesktopServices
+    from unfself_ui.about import AboutDialog
+
+    endpoint, response = server
+    response.update(status=status, delay=0.3)
+    checker = UpdateChecker(endpoint=endpoint)
+    opened = []
+    monkeypatch.setattr(QDesktopServices, "openUrl", lambda url: opened.append(url.toString()) or True)
+    dialog = AboutDialog(checker)
+    dialog.show()
+    dialog.activateWindow()
+    QTest.qWaitForWindowActive(dialog)
+    dialog.check_button.setFocus()
+    application.processEvents()
+    assert dialog.focusWidget() is dialog.check_button
+    try:
+        if activation == "mouse":
+            QTest.mouseClick(dialog.check_button, Qt.MouseButton.LeftButton)
+        else:
+            QTest.keyClick(dialog.check_button, Qt.Key.Key_Return)
+        assert checker.busy
+        focus = dialog.focusWidget()
+        assert focus is dialog.check_button, f"Focus moved to {focus}"
+        QTest.keyClick(focus, Qt.Key.Key_Space)
+        QTest.keyClick(focus, Qt.Key.Key_Return)
+        finish_check(application, checker)
+        assert response["requests"] == 1
+        assert dialog.isVisible() and dialog.focusWidget() is dialog.check_button
+        assert not opened
+    finally:
+        finish_check(application, checker)
+        dialog.close()
+        checker.deleteLater()

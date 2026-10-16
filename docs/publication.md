@@ -1,37 +1,30 @@
 # Publication checklist
 
-Proposed destination: **murums04/ps4-unfself-ui**, a new independent **public** repository. Verify the authenticated login and repository owner immediately before publication. The product identity is **murums**.
+Proposed destination: **murums04/ps4-unfself-ui**, public. Product: **murums PS4 Unfself UI**. Nothing published; verify the signed-in account and repository owner before upload.
 
-## Repository contents
+## Content
 
-- `src/`: converter, Qt worker, UI and entry point.
-- `tests/`: synthetic fixtures and regression/workflow tests only.
-- `scripts/`, `packaging/`, `requirements-build.txt`, `pyproject.toml`: reproducible build and verification inputs.
-- `assets/`: project SVG/ICO/PNG/ICNS and the attributed official GitHub link icon; `licenses/`: runtime license and attribution texts.
-- `.github/workflows/build.yml`: Windows x64, Linux x64 and macOS arm64/x64 build/tests and workflow artifacts; no automatic release publication.
-- README with screenshot and instructions, GPL-3.0 LICENSE, third-party notices, changelog, release notes and verification record.
+Include source, tests, build scripts/configuration, assets, licenses, README, screenshot and public docs. Exclude personal/game files, ELF outputs, local records, environments and build tools. Keep binary packages out of Git; attach them to Releases.
 
-Exclude local virtual environments, build tools, temporary data, personal inputs, game files, test outputs, machine-specific records and binary packages from Git history.
+- Description: `Desktop GUI for SocraticBliss' ps4_unfself. Convert fake-signed PS4 SELF files to ELF.`
+- Topics: `ps4`, `ps4-unfself`, `unfself`, `self-to-elf`, `playstation-4`, `elf`, `homebrew`, `gui`, `windows`, `macos`, `linux`, `pyside6`
+- Homepage: `https://github.com/murums04/ps4-unfself-ui/releases/latest`
+- Tag/title: `v0.1.0` / `murums PS4 Unfself UI 0.1.0`
+- Body: `docs/release-notes.md`
+- Windows assets: setup EXE, portable ZIP, source ZIP, `SHA256SUMS.txt`.
+- Pending: Linux tar.gz/DEB and macOS arm64/x64 app ZIP/DMG, with platform checksums.
 
-## GitHub presentation
+Put direct app downloads above the README screenshot and at the top of the release notes. Use plain platform names, separate Apple Silicon/Intel Mac, and distinguish installers from portable archives. Keep the original project link near the introduction. Topics improve discovery; search placement and an upstream backlink are not guaranteed.
 
-- Name: `ps4-unfself-ui`
-- Description: `Desktop GUI for ps4_unfself: convert fake-signed PS4 SELF files to ELF. Windows, macOS and Linux builds.`
-- Topics: `ps4`, `playstation-4`, `self`, `elf`, `gui`, `windows`, `macos`, `linux`, `python`, `pyside6`
-- Initial release tag: `v0.1.0`
-- Release title: `PS4 Unfself UI 0.1.0`
-- Release body: `docs/release-notes.md`
-- Verified local assets: Windows installer EXE, portable ZIP, corresponding source ZIP, `SHA256SUMS.txt`.
-- Pending native assets: Linux x64 tar.gz and `.deb`; macOS arm64/x64 `.app` ZIPs and DMGs; platform-specific SHA256SUMS files. These files do not exist locally yet.
+## Approval
 
-The README prominently credits and links the original project. A link from the upstream README can be proposed later, with a separately approved contribution; upstream acceptance is not guaranteed.
+1. Show the owner the destination, visibility, changes, asset sizes/hashes, checks and limitations. Get approval before creating the repository or pushing source.
+2. Run native CI, inspect its artifacts, then get approval before publishing the release.
 
-The update checker targets `murums04/ps4-unfself-ui`. If the approved destination changes, update that constant and the project links before rebuilding. Publish stable tags as `vMAJOR.MINOR.PATCH`, keep the versioned platform asset names, and mark the intended stable release as latest. Drafts/prereleases are not offered. The app only opens browser downloads and never replaces itself.
+The owner may approve both steps together for the reviewed scope, conditional on all four platform jobs passing. Do not publish a partial release or label untested platforms as supported. Report failures and repair within the approved scope; request a new review for changed functionality or platform scope.
 
-## Owner review before upload
+After native checks pass, replace pending rows with direct download links, update the platform/test records and rebuild the final packages from the same commit. Combine platform checksums into `SHA256SUMS.txt`. Publish the ten assets (eight app packages, source ZIP and checksums) as a stable latest release. Verify the public README, asset links and updater response after publication.
 
-Present the rendered application, exact destination/visibility, source inclusion list, asset sizes/hashes, executed checks and remaining limitations. Wait for explicit approval before creating the repository, pushing, publishing a release, or contacting upstream.
+Credit/link upstream in the README. Contacting upstream requires separate approval; a backlink is not guaranteed.
 
-Current state: local preparation only. Nothing has been published by this task.
-
-Use two review steps for the expanded platform scope: first approve creating the public repository and uploading the reviewed source, which allows native CI to run. Inspect the resulting native artifacts and checks before asking for approval to publish the complete release. Do not publish unverified macOS/Linux artifacts or imply that an unrun workflow has passed.
+The updater targets `murums04/ps4-unfself-ui`. A destination change requires updated links and a rebuild. Use stable `vMAJOR.MINOR.PATCH` tags, existing asset names and GitHub's latest-release setting. Exclude drafts/prereleases; updates use browser downloads with manual installation.

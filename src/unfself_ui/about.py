@@ -42,12 +42,12 @@ class AboutDialog(QDialog):
         identity.addWidget(text_label(f"Version {__version__}", "Hint"))
         header.addLayout(identity, 1)
         self.owner_link = self.github_button("murums on GitHub", "https://github.com/murums04")
-        self.upstream_link = self.github_button("Original ps4_unfself by SocraticBliss",
+        self.upstream_link = self.github_button("SocraticBliss / ps4_unfself",
                                                 "https://github.com/SocraticBliss/ps4_unfself")
         header.addWidget(self.owner_link, 0, Qt.AlignmentFlag.AlignTop)
         header.addWidget(self.upstream_link, 0, Qt.AlignmentFlag.AlignTop)
         layout.addLayout(header)
-        layout.addWidget(text_label("Restore ELF files from already fake-signed, unencrypted PS4 SELF files.", wrap=True))
+        layout.addWidget(text_label("Fake-signed SELF → ELF. Unencrypted, uncompressed files only.", wrap=True))
 
         updates_panel = QFrame()
         updates_panel.setObjectName("OutputPanel")
@@ -70,18 +70,27 @@ class AboutDialog(QDialog):
         actions.addWidget(self.release_button)
         actions.addStretch()
         updates_layout.addLayout(actions)
-        updates_layout.addWidget(text_label("Checks GitHub on launch. Downloads open in your browser.\n"
-                                           "Extract portable updates to a new folder; installers are on the release page.", "Hint", True))
+        updates_layout.addWidget(text_label("Checks at startup. You install updates manually.", "Hint", True))
         layout.addWidget(updates_panel)
 
         credits = QVBoxLayout()
         credits.setSpacing(7)
         credits.addWidget(text_label("Credits & license", "SectionTitle"))
-        credits.addWidget(text_label("Based on ps4_unfself by SocraticBliss.\nOriginal research: Znullptr, flatz and zecoxao.", wrap=True))
-        credits.addWidget(text_label("GPL-3.0 · Python · Qt for Python\nLicense notices are included with the application.", "Hint", True))
+        credits.addWidget(text_label("ps4_unfself: SocraticBliss\nResearch: Znullptr, flatz, zecoxao", wrap=True))
+        credits.addWidget(text_label("GPL-3.0 · Python · Qt for Python\nSee LICENSE, THIRD_PARTY_NOTICES.md and licenses/.", "Hint", True))
         layout.addLayout(credits)
         footer = QHBoxLayout()
-        footer.addWidget(text_label("File conversion stays on your computer.", "Hint"), 1)
+        footer.addWidget(text_label("Your files stay on this computer.", "Hint"), 1)
+        self.kofi_link = QPushButton()
+        self.kofi_link.setObjectName("SupportLink")
+        self.kofi_link.setIcon(QIcon(str(asset_path("kofi.png"))))
+        self.kofi_link.setIconSize(QSize(18, 18))
+        self.kofi_link.setFixedSize(28, 28)
+        self.kofi_link.setAutoDefault(False)
+        self.kofi_link.setToolTip("murums on Ko-fi")
+        self.kofi_link.setAccessibleName("murums on Ko-fi")
+        self.kofi_link.clicked.connect(lambda: self.open_url("https://ko-fi.com/murums"))
+        footer.addWidget(self.kofi_link)
         close = QPushButton("Close")
         close.setDefault(True)
         close.clicked.connect(self.accept)
@@ -103,14 +112,15 @@ class AboutDialog(QDialog):
 
     def refresh_updates(self):
         self.update_status.setText(self.updates.message)
-        self.check_button.setEnabled(not self.updates.busy)
+        # Disabling this button would move focus to the next visible link.
+        self.check_button.setText("Checking…" if self.updates.busy else "Check now")
         release = self.updates.release
         self.download_button.setVisible(bool(release and release.download_url))
         self.release_button.setVisible(release is not None)
 
     def open_url(self, url):
         if not QDesktopServices.openUrl(QUrl(url)):
-            self.update_status.setText("Could not open your browser. Please visit github.com manually.")
+            self.update_status.setText(f"Could not open your browser. Open {url}.")
 
     def open_download(self):
         if self.updates.release and self.updates.release.download_url:

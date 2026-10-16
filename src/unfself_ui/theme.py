@@ -23,6 +23,9 @@ QPushButton#Primary:disabled { background: #203e40; color: #70918d; border-color
 QPushButton#Quiet { background: transparent; border: 1px solid transparent; color: #b2c1d2; }
 QPushButton#Quiet:hover { background: #1b2a3c; }
 QPushButton#IconButton { padding: 7px; }
+QPushButton#SupportLink { background: transparent; border: 1px solid transparent; padding: 4px; }
+QPushButton#SupportLink:hover { background: #1b2a3c; }
+QPushButton#SupportLink:focus { border: 2px solid #57ddc5; }
 QLineEdit { background: #0d1622; border: 1px solid #35485f; border-radius: 6px; padding: 9px 10px; selection-background-color: #237e79; }
 QLineEdit:disabled { color: #77899c; }
 QTableWidget { background: #101a27; alternate-background-color: #131f2e; border: 1px solid #243244; border-radius: 8px; gridline-color: transparent; selection-background-color: #244c59; }
