@@ -40,14 +40,9 @@ def main():
     payload = args.payload.resolve()
     if not (payload / "PS4 Unfself UI.exe").exists():
         raise FileNotFoundError("Build the executable first")
-    for name in ("LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "README.md"):
+    for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
         shutil.copyfile(ROOT / name, payload / name)
     shutil.copytree(ROOT / "licenses", payload / "licenses", dirs_exist_ok=True)
-    (payload / "docs" / "images").mkdir(parents=True, exist_ok=True)
-    for name in ("release-notes.md", "verification.md", "publication.md", "building.md"):
-        shutil.copyfile(ROOT / "docs" / name, payload / "docs" / name)
-    shutil.copyfile(ROOT / "docs" / "images" / "app.png", payload / "docs" / "images" / "app.png")
-    shutil.copyfile(ROOT / "docs" / "images" / "logo.png", payload / "docs" / "images" / "logo.png")
     prefix = f"ps4-unfself-ui-{__version__}"
     with zipfile.ZipFile(packages / f"{prefix}-windows-x64-portable.zip", "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(payload.rglob("*")):

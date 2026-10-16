@@ -16,6 +16,13 @@ from tests.fixtures import write_fixture
 from unfself_ui import __version__
 
 
+def verify_runtime_contents(folder):
+    for name in ("LICENSE", "THIRD_PARTY_NOTICES.md", "licenses/Python.txt"):
+        assert (folder / name).is_file(), f"Missing license: {name}"
+    for name in ("README.md", "CHANGELOG.md", "docs", "tests", "scripts"):
+        assert not (folder / name).exists(), f"Unexpected development file: {name}"
+
+
 def verify_application(executable, folder, tag):
     folder.mkdir()
     source, expected = write_fixture(folder, "Prüfung 日本.self", reverse=True, version_tail=b"library versions")
@@ -53,11 +60,12 @@ def verify_linux(packages, workspace, install):
         archive.extractall(portable, filter="data")
     executable = portable / "ps4-unfself-ui/ps4-unfself-ui"
     assert os.access(executable, os.X_OK)
-    assert (portable / "ps4-unfself-ui/LICENSE").is_file()
+    verify_runtime_contents(portable / "ps4-unfself-ui")
     verify_application(executable, workspace / "portable-check", "portable")
     installer = packages / f"{prefix}.deb"
     extracted = workspace / "debian"
     subprocess.run(["dpkg-deb", "-x", str(installer), str(extracted)], check=True)
+    verify_runtime_contents(extracted / "opt/ps4-unfself-ui")
     desktop = extracted / "usr/share/applications/ps4-unfself-ui.desktop"
     subprocess.run(["desktop-file-validate", str(desktop)], check=True)
     verify_application(extracted / "opt/ps4-unfself-ui/ps4-unfself-ui", workspace / "debian-check", "Debian payload")
@@ -83,6 +91,7 @@ def verify_macos(packages, workspace, target):
     portable = workspace / "portable"
     subprocess.run(["ditto", "-x", "-k", str(packages / f"{prefix}-portable.zip"), str(portable)], check=True)
     application = portable / "PS4 Unfself UI.app"
+    verify_runtime_contents(application / "Contents/Resources")
     with (application / "Contents/Info.plist").open("rb") as stream:
         info = plistlib.load(stream)
     assert info["LSMinimumSystemVersion"] == "13.0"
@@ -98,6 +107,7 @@ def verify_macos(packages, workspace, target):
         assert (mount / "Applications").is_symlink()
         installed = workspace / "Applications/PS4 Unfself UI.app"
         subprocess.run(["ditto", str(mount / "PS4 Unfself UI.app"), str(installed)], check=True)
+        verify_runtime_contents(installed / "Contents/Resources")
         subprocess.run(["codesign", "--verify", "--deep", "--strict", str(installed)], check=True)
         verify_application(installed / "Contents/MacOS/ps4-unfself-ui", workspace / "dmg-check", "DMG application copy")
     finally:

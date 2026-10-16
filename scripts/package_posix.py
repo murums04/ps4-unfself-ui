@@ -22,15 +22,9 @@ LINUX_DEPENDENCIES = (
 
 
 def copy_notices(destination):
-    for name in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md"):
+    for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
         shutil.copyfile(ROOT / name, destination / name)
     shutil.copytree(ROOT / "licenses", destination / "licenses", dirs_exist_ok=True)
-    images = destination / "docs/images"
-    images.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(ROOT / "docs/images/app.png", images / "app.png")
-    shutil.copyfile(ROOT / "docs/images/logo.png", images / "logo.png")
-    for name in ("release-notes.md", "verification.md", "publication.md", "building.md"):
-        shutil.copyfile(ROOT / "docs" / name, destination / "docs" / name)
 
 
 def stage_debian(payload, destination):

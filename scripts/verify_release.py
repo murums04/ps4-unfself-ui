@@ -35,8 +35,11 @@ def main():
                          "_internal/assets/github.svg", "_internal/assets/kofi.png"):
             assert f"ps4-unfself-ui/{required}" in names, f"Missing runtime file: {required}"
         assert not any(name.lower().endswith((".self", ".elf", ".sprx", ".log")) for name in names)
-        for name in ("LICENSE", "THIRD_PARTY_NOTICES.md", "README.md"):
+        for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
             assert archive.read(f"ps4-unfself-ui/{name}") == (ROOT / name).read_bytes()
+        for name in ("README.md", "CHANGELOG.md", "docs", "tests", "scripts"):
+            prefix = f"ps4-unfself-ui/{name}"
+            assert not any(path == prefix or path.startswith(prefix + "/") for path in names)
     for name in sorted(expected_assets):
         print(f"{name}: {(packages / name).stat().st_size:,} bytes")
     print("RELEASE_VERIFICATION_PASSED")

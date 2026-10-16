@@ -8,4 +8,5 @@
 - Windows: dark title bars, portable ZIP, per-user installer, source and checksums.
 - macOS: Apple Silicon/Intel app ZIP and DMG, with native tests.
 - Linux: portable tar.gz and DEB, with installation tests and runtime notices.
+- Packages: app runtime and license notices only; tests and documentation stay in the source ZIP.
 
