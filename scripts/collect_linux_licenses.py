@@ -7,6 +7,14 @@ from pathlib import Path
 from urllib.parse import quote
 
 
+def find_library_package(library):
+    for path in (library, library.resolve()):
+        found = subprocess.run(["dpkg-query", "-S", str(path)], capture_output=True, text=True)
+        if found.returncode == 0:
+            return found.stdout.split(": ", 1)[0].splitlines()[0]
+    raise RuntimeError(f"No installed package owns bundled library {library}; add its license and provenance before release.")
+
+
 def collect(toc, destination):
     records = {}
     entries = ast.literal_eval(toc.read_text(encoding="utf-8"))[0]
@@ -16,10 +24,7 @@ def collect(toc, destination):
             continue
         if path.name.startswith("libpython"):
             continue
-        found = subprocess.run(["dpkg-query", "-S", str(path)], capture_output=True, text=True)
-        if found.returncode:
-            raise RuntimeError(f"No installed package owns bundled library {path}; add its license and provenance before release.")
-        package = found.stdout.split(": ", 1)[0].splitlines()[0]
+        package = find_library_package(path)
         if package in records:
             continue
         copyright_file = Path("/usr/share/doc") / package.split(":", 1)[0] / "copyright"

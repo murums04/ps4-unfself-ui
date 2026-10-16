@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from unfself_ui import converter
 
 
@@ -51,3 +53,26 @@ def test_debian_payload_includes_launcher_icon_and_notices(tmp_path):
     assert "Exec=/opt/ps4-unfself-ui/ps4-unfself-ui %F" in (stage / "usr/share/applications/ps4-unfself-ui.desktop").read_text()
     assert (stage / "usr/share/icons/hicolor/256x256/apps/ps4-unfself-ui.png").is_file()
     assert (stage / "usr/share/doc/ps4-unfself-ui/copyright").is_file()
+
+
+@pytest.mark.parametrize("owned_path", ["original", "resolved", "unknown"])
+def test_linux_runtime_license_lookup_resolves_library_symlinks(monkeypatch, owned_path):
+    from scripts.collect_linux_licenses import find_library_package
+
+    library = Path("/lib/x86_64-linux-gnu/libX11-xcb.so.1")
+    resolved = Path("/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0")
+    owner_path = {"original": str(library), "resolved": str(resolved), "unknown": None}[owned_path]
+    monkeypatch.setattr(Path, "resolve", lambda self: resolved)
+
+    def query(command, **kwargs):
+        assert command[:2] == ["dpkg-query", "-S"]
+        found = command[2] == owner_path
+        return SimpleNamespace(returncode=0 if found else 1,
+                               stdout=f"libx11-xcb1:amd64: {owner_path}\n" if found else "")
+
+    monkeypatch.setattr(subprocess, "run", query)
+    if owned_path == "unknown":
+        with pytest.raises(RuntimeError, match="No installed package owns"):
+            find_library_package(library)
+    else:
+        assert find_library_package(library) == "libx11-xcb1:amd64"
