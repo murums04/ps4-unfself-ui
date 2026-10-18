@@ -10,14 +10,14 @@ Community GUI by **murums**, based on [ps4_unfself by SocraticBliss](https://git
 
 ## Download
 
-**Version 0.1.0** · [SHA-256 checksums](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/SHA256SUMS.txt)
+**Version 0.1.1** · [SHA-256 checksums](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/SHA256SUMS.txt)
 
 | Platform | Installer | Portable |
 | --- | --- | --- |
-| Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-windows-x64-portable.zip) |
-| macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-arm64-portable.zip) |
-| macOS · Intel | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-macos-x64-portable.zip) |
-| Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.0-linux-x64-portable.tar.gz) |
+| Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-windows-x64-portable.zip) |
+| macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-macos-arm64-portable.zip) |
+| macOS · Intel | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-macos-x64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-macos-x64-portable.zip) |
+| Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.1-linux-x64-portable.tar.gz) |
 
 Choose an installer for normal use. All packages include Python and Qt. GitHub's **Code → Download ZIP** contains source code.
 

@@ -9,7 +9,7 @@ Include source, tests, build scripts/configuration, assets, licenses, README, sc
 - Description: `Desktop GUI for SocraticBliss' ps4_unfself. Convert fake-signed PS4 SELF files to ELF.`
 - Topics: `ps4`, `ps4-unfself`, `unfself`, `self-to-elf`, `playstation-4`, `elf`, `homebrew`, `gui`, `windows`, `macos`, `linux`, `pyside6`
 - Homepage: `https://github.com/murums04/ps4-unfself-ui/releases/latest`
-- Tag/title: `v0.1.0` / `murums PS4 Unfself UI 0.1.0`
+- Tag/title: `v0.1.1` / `murums PS4 Unfself UI 0.1.1`
 - Body: `docs/release-notes.md`
 - Windows setup EXE and portable ZIP.
 - macOS arm64/x64 DMG and app ZIP for each architecture.

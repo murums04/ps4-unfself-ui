@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Logo: added SELF to the original file icon across the app, installers and README.
+
 ## 0.1.0
 
 - UI: file queue, drag-and-drop, progress, cancellation and error details.

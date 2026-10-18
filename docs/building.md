@@ -11,7 +11,7 @@ Windows setup offers a desktop shortcut. On macOS, extract the ZIP or drag the D
 On Linux, extract the tar.gz and run `./ps4-unfself-ui`, or use:
 
 ```sh
-sudo apt install ./ps4-unfself-ui-0.1.0-linux-x64.deb
+sudo apt install ./ps4-unfself-ui-0.1.1-linux-x64.deb
 sudo apt remove ps4-unfself-ui
 ```
 

@@ -25,8 +25,8 @@ if is_mac:
         bundle_identifier='io.github.murums04.ps4-unfself-ui',
         info_plist={
             'CFBundleName': 'PS4 Unfself UI',
-            'CFBundleShortVersionString': '0.1.0',
-            'CFBundleVersion': '0.1.0',
+            'CFBundleShortVersionString': '0.1.1',
+            'CFBundleVersion': '0.1.1',
             'LSMinimumSystemVersion': '13.0',
             'NSHighResolutionCapable': True,
         },
