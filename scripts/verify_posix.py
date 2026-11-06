@@ -97,8 +97,7 @@ def verify_macos(packages, workspace, target):
     assert info["LSMinimumSystemVersion"] == "13.0"
     subprocess.run(["codesign", "--verify", "--deep", "--strict", str(application)], check=True)
     executable = application / "Contents/MacOS/ps4-unfself-ui"
-    expected_arch = "arm64" if target.endswith("arm64") else "x86_64"
-    assert subprocess.check_output(["lipo", "-archs", str(executable)], text=True).strip() == expected_arch
+    assert subprocess.check_output(["lipo", "-archs", str(executable)], text=True).strip() == "arm64"
     verify_application(executable, workspace / "portable-check", "application ZIP")
     mount = workspace / "mounted"
     subprocess.run(["hdiutil", "attach", "-nobrowse", "-readonly", "-mountpoint", str(mount),
@@ -121,7 +120,9 @@ def main():
     args = parser.parse_args()
     if sys.platform not in ("linux", "darwin"):
         parser.error("Run on the native Linux or macOS host.")
-    target = "linux-x64" if sys.platform == "linux" else "macos-" + ("arm64" if platform.machine() == "arm64" else "x64")
+    if sys.platform == "darwin" and platform.machine() != "arm64":
+        parser.error("macOS verification requires Apple Silicon (arm64).")
+    target = "linux-x64" if sys.platform == "linux" else "macos-arm64"
     packages = args.packages.resolve()
     manifest = packages / f"SHA256SUMS-{target}.txt"
     expected_suffixes = ("-portable.tar.gz", ".deb") if target == "linux-x64" else ("-portable.zip", ".dmg")

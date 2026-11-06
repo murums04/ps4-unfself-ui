@@ -66,9 +66,9 @@ def package_linux(dist, output, workspace):
 
 def package_macos(dist, output, workspace):
     architecture = platform.machine()
-    if architecture not in ("arm64", "x86_64"):
-        raise RuntimeError(f"Unsupported macOS architecture: {architecture}")
-    target = "macos-" + ("arm64" if architecture == "arm64" else "x64")
+    if architecture != "arm64":
+        raise RuntimeError("macOS packages require Apple Silicon (arm64).")
+    target = "macos-arm64"
     application = dist / "PS4 Unfself UI.app"
     copy_notices(application / "Contents/Resources")
     subprocess.run(["codesign", "--force", "--deep", "--sign", "-", str(application)], check=True)

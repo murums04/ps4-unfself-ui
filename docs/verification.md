@@ -27,9 +27,9 @@ Baseline: upstream `794ed5460ea6d82def0ed661d05d8171fa09ce1b`; format cross-chec
 
 ## Native packages
 
-GitHub Actions builds and tests Windows x64, Linux x64 and both Mac architectures on native runners. See [build results](https://github.com/murums04/ps4-unfself-ui/actions/workflows/build.yml).
+GitHub Actions builds and tests Windows x64, Linux x64 and macOS arm64 on native runners. See [build results](https://github.com/murums04/ps4-unfself-ui/actions/workflows/build.yml).
 
 - Linux x64/Ubuntu 22.04: suite, tar.gz/DEB, XCB under Xvfb, exact conversion, input preservation, invalid-file rejection, install/reinstall/purge and runtime licenses.
-- macOS arm64/x64 on macOS 15: suite, app ZIP/DMG, architecture/ad-hoc signature, DMG copy, Cocoa GUI, exact conversion, input preservation and invalid-file rejection. No notarization.
+- macOS arm64 on macOS 15: suite, app ZIP/DMG, architecture/ad-hoc signature, DMG copy, Cocoa GUI, exact conversion, input preservation and invalid-file rejection. No notarization.
 
-All four jobs must pass on the final release commit. Minimum OS versions describe build baselines; CI does not test every supported OS version or Linux distribution.
+All three jobs must pass on the final release commit. Minimum OS versions describe build baselines; CI does not test every supported OS version or Linux distribution.

@@ -25,7 +25,6 @@ def release_data(version="0.2.0", target="windows-x64", extension="zip"):
 @pytest.mark.parametrize("system,machine,target,extension", [
     ("win32", "AMD64", "windows-x64", "zip"),
     ("darwin", "arm64", "macos-arm64", "zip"),
-    ("darwin", "x86_64", "macos-x64", "zip"),
     ("linux", "x86_64", "linux-x64", "tar.gz"),
 ])
 def test_new_release_selects_matching_portable_download(system, machine, target, extension):
@@ -33,6 +32,15 @@ def test_new_release_selects_matching_portable_download(system, machine, target,
     release = parse_release(data, "0.1.0", system, machine)
     assert release.version == "0.2.0"
     assert release.download_url == data["assets"][0]["browser_download_url"]
+
+
+@pytest.mark.parametrize("targets", [("macos-x64",), ("macos-arm64",), ("macos-x64", "macos-arm64")])
+def test_intel_mac_uses_release_page(targets):
+    data = release_data()
+    data["assets"] = [release_data(target=target)["assets"][0] for target in targets]
+    release = parse_release(data, "0.1.0", "darwin", "x86_64")
+    assert not release.download_url
+    assert release.release_url == data["html_url"]
 
 
 @pytest.mark.parametrize("version", ["0.1.0", "0.0.9"])

@@ -17,6 +17,8 @@ def main():
         parser.error("Run this script on Linux or macOS; cross-compilation is not supported.")
     if sys.platform == "linux" and platform.machine() not in ("x86_64", "AMD64"):
         parser.error("The Linux package currently targets x64.")
+    if sys.platform == "darwin" and platform.machine() != "arm64":
+        parser.error("macOS builds require Apple Silicon (arm64).")
     work = args.work_dir.resolve()
     work.mkdir(parents=True, exist_ok=True)
     environment = os.environ.copy()

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Updated Pillow to 13.0.0 and setuptools to 84.1.0.
+- Removed macOS Intel builds and downloads; macOS now targets Apple Silicon only.
+
 ## 0.1.1
 
 - Logo: added SELF to the original file icon across the app, installers and README.

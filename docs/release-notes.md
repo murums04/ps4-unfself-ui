@@ -6,7 +6,6 @@ Updated the original file icon with **SELF** in the app, installers and README. 
 | --- | --- | --- |
 | Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-windows-x64-portable.zip) |
 | macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-macos-arm64-portable.zip) |
-| macOS · Intel | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-macos-x64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-macos-x64-portable.zip) |
 | Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/download/v0.1.1/ps4-unfself-ui-0.1.1-linux-x64-portable.tar.gz) |
 
 Choose an installer for normal use. Portable packages need full extraction. Python and Qt are included; GitHub's **Source code** downloads do not contain the app.

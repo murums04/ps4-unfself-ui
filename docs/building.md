@@ -3,7 +3,7 @@
 | Platform | Baseline | Packages | Status |
 | --- | --- | --- | --- |
 | Windows x64 | Windows 10 1809+ | Setup EXE, portable ZIP | Windows 11 tested; Windows 10 untested |
-| macOS arm64 / x64 | macOS 13+ | App ZIP, DMG | Built and tested on macOS 15, both architectures |
+| macOS arm64 (Apple Silicon) | macOS 13+ | App ZIP, DMG | Built and tested on macOS 15 |
 | Linux x64 | glibc 2.35+, X11/XWayland; Ubuntu 22.04 | tar.gz, DEB | Built and tested on Ubuntu 22.04 |
 
 Windows setup offers a desktop shortcut. On macOS, extract the ZIP or drag the DMG app to Applications. Builds use an ad-hoc signature without Developer ID/notarization; Gatekeeper may require approval in Privacy & Security.
@@ -50,7 +50,7 @@ macOS requires Xcode command-line tools, `codesign`, `ditto` and `hdiutil`. Linu
 
 Windows package checks install/reinstall/uninstall in `.work/package-check-*/installed` and verify shortcuts/registration. They refuse to alter an existing installation. POSIX checks extract packages; reserve `verify_posix.py --install` for disposable Linux runners because it uses sudo to install and purge.
 
-CI builds/tests Windows x64, Linux x64 and both macOS architectures, then saves artifacts. Publishing needs owner approval; see [checklist](publication.md).
+CI builds/tests Windows x64, Linux x64 and macOS arm64, then saves artifacts. Publishing needs owner approval; see [checklist](publication.md).
 
 ## Headless conversion
 

@@ -30,7 +30,7 @@ def version_parts(value):
 def portable_asset_name(version, system, machine):
     architecture = {"amd64": "x64", "x86_64": "x64", "arm64": "arm64", "aarch64": "arm64"}.get(machine.lower())
     target = {"win32": "windows", "darwin": "macos", "linux": "linux"}.get(system)
-    if not target or not architecture or (architecture != "x64" and target != "macos"):
+    if not target or architecture != ("arm64" if target == "macos" else "x64"):
         return None
     extension = "tar.gz" if target == "linux" else "zip"
     return f"ps4-unfself-ui-{version}-{target}-{architecture}-portable.{extension}"
