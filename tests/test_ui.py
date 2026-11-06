@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 
@@ -71,6 +72,74 @@ def test_missing_destination_disables_conversion(window, tmp_path):
     window.add_files([source])
     window.output_edit.setText(str(tmp_path / "not-there"))
     assert not window.convert_button.isEnabled()
+
+
+@pytest.mark.parametrize("output_name", ["output", pytest.param("output ", marks=pytest.mark.skipif(
+    os.name == "nt", reason="Windows trims trailing spaces in directory names"))])
+def test_home_output_path_converts_and_opens_the_same_folder(
+        window, application, tmp_path, monkeypatch, output_name):
+    from PySide6.QtGui import QDesktopServices
+
+    source, expected = write_fixture(tmp_path)
+    destination = tmp_path / output_name
+    destination.mkdir()
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+    opened = []
+    monkeypatch.setattr(QDesktopServices, "openUrl", lambda url: opened.append(url.toLocalFile()) or True)
+    window.add_files([source])
+    window.output_edit.setText(f"~/{output_name}")
+    assert window.convert_button.isEnabled()
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    assert (destination / "sample.elf").read_bytes() == expected
+    window.open_output()
+    assert [Path(path) for path in opened] == [destination.resolve()]
+
+
+def test_unknown_home_disables_conversion(window, tmp_path):
+    source, _ = write_fixture(tmp_path)
+    window.add_files([source])
+    window.output_edit.setText("~missing-test-user/output")
+    assert not window.convert_button.isEnabled()
+    assert not window.open_button.isEnabled()
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Windows disallows angle brackets in filenames")
+def test_conversion_status_preserves_filename_markup(window, tmp_path):
+    source, _ = write_fixture(tmp_path)
+    source = source.rename(tmp_path / "<b>sample.self")
+    window.add_files([source])
+    window.file_started(0)
+    expected = f"Converting 1 of 1 · {source.name}"
+    window.status_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+    window.status_label.setSelection(0, len(expected))
+    assert window.status_label.selectedText() == expected
+
+
+@pytest.mark.parametrize("change", ["add", "remove", "clear"])
+def test_changing_completed_queue_resets_batch_summary(window, application, tmp_path, change):
+    source, _ = write_fixture(tmp_path)
+    window.add_files([source])
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    assert window.results == {0: "Converted"}
+    assert window.progress.value() == 100
+    if change == "add":
+        added = tmp_path / "another.self"
+        added.write_bytes(source.read_bytes())
+        window.add_files([added])
+    elif change == "remove":
+        window.table.selectRow(0)
+        window.remove_selected()
+    else:
+        window.clear_files()
+    assert not window.results
+    assert window.progress.value() == 0
+    assert window.convert_button.text() == "Convert to ELF"
+    assert window.status_label.text() == ("Add files." if change == "clear" else
+                                          f"Queued: {len(window.sources)}")
+    assert window.queue_label.text() == f"Files · {len(window.sources)}"
 
 
 def test_cancelling_a_queue_settles_every_row(window, application, tmp_path):

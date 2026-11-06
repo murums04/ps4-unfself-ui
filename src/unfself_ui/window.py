@@ -19,6 +19,7 @@ from .updates import UpdateChecker
 
 def label(text: str, name: str = "", wrap=False) -> QLabel:
     widget = QLabel(text)
+    widget.setTextFormat(Qt.TextFormat.PlainText)
     widget.setObjectName(name)
     widget.setWordWrap(wrap)
     return widget
@@ -219,6 +220,7 @@ class MainWindow(QMainWindow):
     def add_files(self, paths):
         if self.worker is not None:
             return
+        previous_count = len(self.sources)
         skipped = 0
         for path in paths:
             try:
@@ -237,6 +239,10 @@ class MainWindow(QMainWindow):
             self.table.item(row, 0).setToolTip(str(path))
         if self.sources and not self.output_edit.text():
             self.output_edit.setText(str(self.sources[0].parent))
+        if len(self.sources) != previous_count:
+            self.results.clear()
+            self.progress.setValue(0)
+            self.convert_button.setText("Convert to ELF")
         self.queue_label.setText(f"Files · {len(self.sources)}")
         self.status_label.setText(f"Queued: {len(self.sources)}" +
                                   (f" · Skipped: {skipped} duplicates/non-files" if skipped else ""))
@@ -245,21 +251,29 @@ class MainWindow(QMainWindow):
     def remove_selected(self):
         if self.worker is not None:
             return
-        for row in sorted({index.row() for index in self.table.selectedIndexes()}, reverse=True):
+        rows = sorted({index.row() for index in self.table.selectedIndexes()}, reverse=True)
+        for row in rows:
             self.sources.pop(row)
             self.table.removeRow(row)
+        if rows:
+            self.results.clear()
+            self.progress.setValue(0)
+            self.convert_button.setText("Convert to ELF")
         self.queue_label.setText(f"Files · {len(self.sources)}")
+        self.status_label.setText(f"Queued: {len(self.sources)}")
         self.update_actions()
 
     def clear_files(self):
         if self.worker is not None:
             return
         self.sources.clear()
+        self.results.clear()
         self.table.setRowCount(0)
         self.details.clear()
         self.progress.setValue(0)
         self.queue_label.setText("Files · 0")
         self.status_label.setText("Add files.")
+        self.convert_button.setText("Convert to ELF")
         self.update_actions()
 
     def choose_output(self):
@@ -270,8 +284,8 @@ class MainWindow(QMainWindow):
     def update_actions(self):
         busy = self.worker is not None
         try:
-            valid_output = bool(self.output_edit.text().strip()) and Path(self.output_edit.text()).is_dir()
-        except (OSError, ValueError):
+            valid_output = bool(self.output_edit.text()) and Path(self.output_edit.text()).expanduser().is_dir()
+        except (OSError, ValueError, RuntimeError):
             valid_output = False
         self.add_button.setEnabled(not busy)
         self.drop_area.setEnabled(not busy)
@@ -291,7 +305,7 @@ class MainWindow(QMainWindow):
         self.progress.setValue(0)
         for row in range(len(self.sources)):
             self.set_row(row, "Waiting", "—")
-        self.worker = ConversionWorker(list(self.sources), Path(self.output_edit.text()), self)
+        self.worker = ConversionWorker(list(self.sources), Path(self.output_edit.text()).expanduser(), self)
         self.worker.file_started.connect(self.file_started)
         self.worker.progress_changed.connect(self.update_progress)
         self.worker.file_finished.connect(self.file_finished)
@@ -347,7 +361,8 @@ class MainWindow(QMainWindow):
         self.details_button.setText("Hide details" if visible else "Show details")
 
     def open_output(self):
-        if not QDesktopServices.openUrl(QUrl.fromLocalFile(self.output_edit.text())):
+        path = str(Path(self.output_edit.text()).expanduser().resolve())
+        if not QDesktopServices.openUrl(QUrl.fromLocalFile(path)):
             self.status_label.setText("Could not open folder. Copy the output path above.")
 
     def show_about(self):

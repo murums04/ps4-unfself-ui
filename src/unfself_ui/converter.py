@@ -4,6 +4,7 @@ Original research credits: SocraticBliss, Znullptr, flatz and zecoxao.
 The index-based, validated streaming implementation is maintained by murums.
 """
 
+import errno
 import os
 import struct
 import tempfile
@@ -146,7 +147,25 @@ def inspect_layout(stream: BinaryIO, file_size: int) -> Layout:
     return Layout(headers, segments, output_size)
 
 
-def publish_output(temporary: Path, source: Path, output_dir: Path) -> Path:
+def copy_output(temporary: Path, destination: Path, cancel: Callable[[], bool]):
+    output = destination.open("xb")
+    try:
+        with output, temporary.open("rb") as stream:
+            while chunk := stream.read(CHUNK_SIZE):
+                if cancel():
+                    raise ConversionCancelled()
+                output.write(chunk)
+            if cancel():
+                raise ConversionCancelled()
+            output.flush()
+            os.fsync(output.fileno())
+    except BaseException:
+        destination.unlink()
+        raise
+
+
+def publish_output(temporary: Path, source: Path, output_dir: Path,
+                   cancel: Callable[[], bool] = lambda: False) -> Path:
     number = 1
     while True:
         suffix = "" if number == 1 else f" ({number})"
@@ -156,7 +175,12 @@ def publish_output(temporary: Path, source: Path, output_dir: Path) -> Path:
                 # Windows rename fails if the target exists, including a concurrent creator.
                 os.rename(temporary, destination)
             else:
-                os.link(temporary, destination)
+                try:
+                    os.link(temporary, destination)
+                except OSError as error:
+                    if error.errno not in (errno.ENOTSUP, errno.EOPNOTSUPP, errno.EPERM):
+                        raise
+                    copy_output(temporary, destination, cancel)
                 temporary.unlink()
             return destination
         except FileExistsError:
@@ -210,7 +234,7 @@ def convert_file(
                 os.fsync(output.fileno())
             if cancel():
                 raise ConversionCancelled()
-            return publish_output(temporary, source, output_dir)
+            return publish_output(temporary, source, output_dir, cancel)
     except OSError as error:
         raise ConversionError(f"File access failed: {error.strerror or error}") from error
     finally:

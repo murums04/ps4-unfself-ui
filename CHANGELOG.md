@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.2
 
+- Fixed CLI report errors before conversion.
+- Added exFAT output support on macOS and Linux.
+- Fixed output paths, filename display and queue status.
 - Updated Pillow to 13.0.0 and setuptools to 84.1.0.
 - Removed macOS Intel builds and downloads; macOS now targets Apple Silicon only.
 

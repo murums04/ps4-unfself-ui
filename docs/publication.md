@@ -9,7 +9,7 @@ Include source, tests, build scripts/configuration, assets, licenses, README, sc
 - Description: `Desktop GUI for SocraticBliss' ps4_unfself. Convert fake-signed PS4 SELF files to ELF.`
 - Topics: `ps4`, `ps4-unfself`, `unfself`, `self-to-elf`, `playstation-4`, `elf`, `homebrew`, `gui`, `windows`, `macos`, `linux`, `pyside6`
 - Homepage: `https://github.com/murums04/ps4-unfself-ui/releases/latest`
-- Tag/title: `v0.1.1` / `murums PS4 Unfself UI 0.1.1`
+- Tag/title: `v0.1.2` / `murums PS4 Unfself UI 0.1.2`
 - Body: `docs/release-notes.md`
 - Windows setup EXE and portable ZIP.
 - macOS arm64 (Apple Silicon) DMG and app ZIP.
@@ -23,7 +23,7 @@ Put direct app downloads above the README screenshot and at the top of the relea
 1. Show the owner the destination, visibility, changes, asset sizes/hashes, checks and limitations. Get approval before creating the repository or pushing source.
 2. Run native CI, inspect its artifacts, then get approval before publishing the release.
 
-The owner may approve both steps together for the reviewed scope, conditional on all three platform jobs passing. Do not publish a partial release or label untested platforms as supported. Report failures and repair within the approved scope; request a new review for changed functionality or platform scope.
+The owner may approve both steps together for the reviewed scope, conditional on all three platform jobs passing. Publish the complete release after its platform checks pass. Report failures privately and repair within the approved scope; request a new review for changed functionality or platform scope.
 
 Keep direct download links and platform/test records current. Build the final packages from the same commit and combine platform checksums into `SHA256SUMS.txt`. Publish the eight assets (six app packages, source ZIP and checksums) as a stable latest release. Verify the public README, asset links and updater response after publication.
 

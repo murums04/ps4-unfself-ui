@@ -1,21 +1,21 @@
 # Platforms and builds
 
-| Platform | Baseline | Packages | Status |
-| --- | --- | --- | --- |
-| Windows x64 | Windows 10 1809+ | Setup EXE, portable ZIP | Windows 11 tested; Windows 10 untested |
-| macOS arm64 (Apple Silicon) | macOS 13+ | App ZIP, DMG | Built and tested on macOS 15 |
-| Linux x64 | glibc 2.35+, X11/XWayland; Ubuntu 22.04 | tar.gz, DEB | Built and tested on Ubuntu 22.04 |
+| Platform | Baseline | Packages |
+| --- | --- | --- |
+| Windows x64 | Windows 10 1809+ | Setup EXE, portable ZIP |
+| macOS arm64 (Apple Silicon) | macOS 13+ | App ZIP, DMG |
+| Linux x64 | glibc 2.35+, X11/XWayland; Ubuntu 22.04 | tar.gz, DEB |
 
 Windows setup offers a desktop shortcut. On macOS, extract the ZIP or drag the DMG app to Applications. Builds use an ad-hoc signature without Developer ID/notarization; Gatekeeper may require approval in Privacy & Security.
 
 On Linux, extract the tar.gz and run `./ps4-unfself-ui`, or use:
 
 ```sh
-sudo apt install ./ps4-unfself-ui-0.1.1-linux-x64.deb
+sudo apt install ./ps4-unfself-ui-0.1.2-linux-x64.deb
 sudo apt remove ps4-unfself-ui
 ```
 
-Portable Linux users need the dependencies in `scripts/package_posix.py`. Choose an output filesystem with hard-link support; unsupported destinations fail without overwriting files.
+Portable Linux users need the dependencies in `scripts/package_posix.py`. Outputs also support exFAT. On filesystems without hard links, wait for conversion to finish before opening the output; a forced quit can leave an incomplete file. Normal cancellation removes it.
 
 ## Build
 
@@ -58,4 +58,4 @@ CI builds/tests Windows x64, Linux x64 and macOS arm64, then saves artifacts. Pu
 .venv\Scripts\python.exe -m unfself_ui --convert eboot.bin --output-dir output --report result.json
 ```
 
-The packaged executable accepts these arguments. Create the output folder first; choose a new report path. For the windowed Windows EXE, wait for completion and read `--report`. Exit `0`: all conversions passed. Exit `1`: at least one failed.
+The packaged executable accepts these arguments. Create the output folder first; choose a new report path. An unusable report path stops conversion before any output is written. For the windowed Windows EXE, wait for completion and read `--report`. Exit `0`: all conversions passed. Exit `1`: a conversion or report failed.

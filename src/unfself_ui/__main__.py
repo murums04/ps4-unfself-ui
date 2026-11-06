@@ -1,6 +1,7 @@
 import argparse
 import json
 import sys
+from contextlib import nullcontext
 from pathlib import Path
 
 from . import __version__
@@ -19,17 +20,22 @@ def main():
     if args.convert:
         if not args.files or args.output_dir is None:
             parser.error("--convert requires input files and --output-dir")
-        results = []
-        for source in args.files:
-            try:
-                output = convert_file(source, args.output_dir)
-                results.append({"source": str(source), "status": "converted", "output": str(output)})
-            except ConversionError as error:
-                results.append({"source": str(source), "status": "failed", "error": str(error)})
-        if args.report:
-            with args.report.open("x", encoding="utf-8") as report:
-                json.dump(results, report, indent=2)
-        elif sys.stdout is not None:
+        try:
+            if args.report and args.report.is_symlink():
+                raise FileExistsError(f"Report path is a symbolic link: {args.report}")
+            with args.report.open("x", encoding="utf-8") if args.report else nullcontext() as report:
+                results = []
+                for source in args.files:
+                    try:
+                        output = convert_file(source, args.output_dir)
+                        results.append({"source": str(source), "status": "converted", "output": str(output)})
+                    except ConversionError as error:
+                        results.append({"source": str(source), "status": "failed", "error": str(error)})
+                if report is not None:
+                    json.dump(results, report, indent=2)
+        except OSError as error:
+            parser.exit(1, f"{parser.prog}: report access failed: {error}\n")
+        if args.report is None and sys.stdout is not None:
             print(json.dumps(results, indent=2))
         return int(any(result["status"] == "failed" for result in results))
 
