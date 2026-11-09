@@ -1,5 +1,13 @@
 # <img src="docs/images/logo.png" alt="" width="64" height="64" align="middle"> &nbsp; murums PS4 Unfself UI
 
+<p align="center">
+  <br>
+  <a href="https://github.com/murums04/ps4-unfself-ui/releases/latest"><img src="https://shieldcn.dev/github/release/murums04/ps4-unfself-ui.svg?variant=default&amp;color=192638&amp;valueColor=57ddc5&amp;labelTextColor=e9eef5&amp;logoColor=57ddc5&amp;height=34&amp;radius=8&amp;fontSize=13&amp;padX=14&amp;iconSize=16&amp;labelGap=10&amp;label=Release&amp;logo=ri:FiTag" alt="Latest release" height="34"></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/murums04/ps4-unfself-ui/releases"><img src="https://shieldcn.dev/github/downloads/murums04/ps4-unfself-ui.svg?variant=default&amp;color=192638&amp;valueColor=57ddc5&amp;labelTextColor=e9eef5&amp;logoColor=57ddc5&amp;height=34&amp;radius=8&amp;fontSize=13&amp;padX=14&amp;iconSize=16&amp;labelGap=10&amp;label=Downloads&amp;logo=ri:FiDownload" alt="Total release downloads" height="34"></a>
+  <br><br>
+</p>
+
 [All downloads](https://github.com/murums04/ps4-unfself-ui/releases/latest) · [Report a bug](https://github.com/murums04/ps4-unfself-ui/issues)
 
 Convert fake-signed PS4 SELF files to ELF. Requires **unencrypted, uncompressed** files; no retail decryption or PKG extraction.
