@@ -13,7 +13,7 @@ from unfself_ui import __version__
 SOURCE_DIRECTORIES = ("src", "tests", "scripts", "packaging", "assets", "licenses", ".github")
 SOURCE_FILES = ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", ".gitignore",
                 "pyproject.toml", "requirements-build.txt", "docs/images/app.png", "docs/images/logo.png",
-                "docs/release-notes.md", "docs/verification.md", "docs/publication.md", "docs/building.md")
+                "docs/release-notes.md", "docs/verification.md", "docs/building.md")
 
 
 def source_files():

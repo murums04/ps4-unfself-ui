@@ -23,7 +23,7 @@ class ConversionWorker(QThread):
     def run(self):
         for row, source in enumerate(self.sources):
             if self.stop_requested.is_set():
-                self.file_finished.emit(row, "Cancelled", "Not processed. Run again to retry.")
+                self.file_finished.emit(row, "Cancelled", "Not processed.")
                 continue
             self.file_started.emit(row)
             last_percent = -1

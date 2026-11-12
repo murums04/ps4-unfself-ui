@@ -8,6 +8,7 @@ import errno
 import os
 import struct
 import tempfile
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -238,5 +239,16 @@ def convert_file(
     except OSError as error:
         raise ConversionError(f"File access failed: {error.strerror or error}") from error
     finally:
-        if temporary is not None and temporary.exists():
-            temporary.unlink()
+        if temporary is not None:
+            remove_temporary(temporary)
+
+
+def remove_temporary(temporary: Path, attempts: int = 5):
+    # Scanners often lock new files briefly; a leftover must not hide the actual result.
+    for attempt in range(attempts):
+        try:
+            temporary.unlink(missing_ok=True)
+            return
+        except OSError:
+            if attempt + 1 < attempts:
+                time.sleep(0.2)

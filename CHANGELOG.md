@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3
+
+- Queue: adding files after a batch converts only new files; "Convert remaining" skips converted files.
+- Input: dropped folders add their SELF files; the whole window accepts drops.
+- Output: explains a missing output folder and rechecks it when the window regains focus.
+- UI: Delete removes selected rows, aligned table header with rounded corners, labeled About links, summaries without zero counts.
+- Conversion: a locked temporary file no longer replaces the actual result or error.
+- Tests run on a fresh checkout and skip symlink checks where Windows denies symlinks.
+
 ## 0.1.2
 
 - Fixed CLI report errors before conversion.

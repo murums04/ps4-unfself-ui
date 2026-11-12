@@ -11,7 +11,7 @@ Windows setup offers a desktop shortcut. On macOS, extract the ZIP or drag the D
 On Linux, extract the tar.gz and run `./ps4-unfself-ui`, or use:
 
 ```sh
-sudo apt install ./ps4-unfself-ui-0.1.2-linux-x64.deb
+sudo apt install ./ps4-unfself-ui-0.1.3-linux-x64.deb
 sudo apt remove ps4-unfself-ui
 ```
 
@@ -50,7 +50,7 @@ macOS requires Xcode command-line tools, `codesign`, `ditto` and `hdiutil`. Linu
 
 Windows package checks install/reinstall/uninstall in `.work/package-check-*/installed` and verify shortcuts/registration. They refuse to alter an existing installation. POSIX checks extract packages; reserve `verify_posix.py --install` for disposable Linux runners because it uses sudo to install and purge.
 
-CI builds/tests Windows x64, Linux x64 and macOS arm64, then saves artifacts. Publishing needs owner approval; see [checklist](publication.md).
+CI builds/tests Windows x64, Linux x64 and macOS arm64, then saves artifacts.
 
 ## Headless conversion
 

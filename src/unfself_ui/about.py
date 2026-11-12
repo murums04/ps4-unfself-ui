@@ -41,11 +41,6 @@ class AboutDialog(QDialog):
         identity.addWidget(text_label("PS4 Unfself UI", "AboutTitle"))
         identity.addWidget(text_label(f"Version {__version__}", "Hint"))
         header.addLayout(identity, 1)
-        self.owner_link = self.github_button("murums on GitHub", "https://github.com/murums04")
-        self.upstream_link = self.github_button("SocraticBliss / ps4_unfself",
-                                                "https://github.com/SocraticBliss/ps4_unfself")
-        header.addWidget(self.owner_link, 0, Qt.AlignmentFlag.AlignTop)
-        header.addWidget(self.upstream_link, 0, Qt.AlignmentFlag.AlignTop)
         layout.addLayout(header)
         layout.addWidget(text_label("Fake-signed SELF → ELF. Unencrypted, uncompressed files only.", wrap=True))
 
@@ -78,6 +73,14 @@ class AboutDialog(QDialog):
         credits.addWidget(text_label("Credits & license", "SectionTitle"))
         credits.addWidget(text_label("ps4_unfself: SocraticBliss\nResearch: Znullptr, flatz, zecoxao", wrap=True))
         credits.addWidget(text_label("GPL-3.0 · Python · Qt for Python\nSee LICENSE, THIRD_PARTY_NOTICES.md and licenses/.", "Hint", True))
+        links = QHBoxLayout()
+        self.owner_link = self.github_button("Source code", "murums on GitHub", "https://github.com/murums04")
+        self.upstream_link = self.github_button("Original project", "SocraticBliss / ps4_unfself",
+                                                "https://github.com/SocraticBliss/ps4_unfself")
+        links.addWidget(self.owner_link)
+        links.addWidget(self.upstream_link)
+        links.addStretch()
+        credits.addLayout(links)
         layout.addLayout(credits)
         footer = QHBoxLayout()
         footer.addWidget(text_label("Your files stay on this computer.", "Hint"), 1)
@@ -99,14 +102,13 @@ class AboutDialog(QDialog):
         self.updates.changed.connect(self.refresh_updates)
         self.refresh_updates()
 
-    def github_button(self, title, url):
-        button = QPushButton()
-        button.setObjectName("IconButton")
+    def github_button(self, text, title, url):
+        button = QPushButton(text)
         button.setIcon(QIcon(str(asset_path("github.svg"))))
-        button.setIconSize(QSize(24, 24))
-        button.setFixedSize(40, 40)
+        button.setIconSize(QSize(18, 18))
+        button.setAutoDefault(False)
         button.setToolTip(title)
-        button.setAccessibleName(title)
+        button.setAccessibleName(text)
         button.clicked.connect(lambda: self.open_url(url))
         return button
 

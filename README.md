@@ -18,13 +18,13 @@ Community GUI by **murums**, based on [ps4_unfself by SocraticBliss](https://git
 
 ## Download
 
-**Version 0.1.2** · [SHA-256 checksums](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/SHA256SUMS.txt)
+**Version 0.1.3** · [SHA-256 checksums](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/SHA256SUMS.txt)
 
 | Platform | Installer | Portable |
 | --- | --- | --- |
-| Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-windows-x64-portable.zip) |
-| macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-macos-arm64-portable.zip) |
-| Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.2-linux-x64-portable.tar.gz) |
+| Windows x64 | [Setup EXE](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-windows-x64-setup.exe) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-windows-x64-portable.zip) |
+| macOS · Apple Silicon | [DMG](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-macos-arm64.dmg) | [ZIP](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-macos-arm64-portable.zip) |
+| Linux x64 | [DEB](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-linux-x64.deb) | [tar.gz](https://github.com/murums04/ps4-unfself-ui/releases/latest/download/ps4-unfself-ui-0.1.3-linux-x64-portable.tar.gz) |
 
 Choose an installer for normal use. All packages include Python and Qt. GitHub's **Code → Download ZIP** contains source code.
 
@@ -36,11 +36,11 @@ Windows executables are unsigned. See [supported systems and installation detail
 
 ## Use
 
-1. Drop files or select **Add files**.
+1. Drop files or folders, or select **Add files**.
 2. Choose an **Output folder**; it defaults to the first input's folder.
 3. Select **Convert to ELF**, then **Open output folder**. Use **Show details** for errors and paths.
 
-Inputs stay read-only. Existing outputs get numbered alternatives: `eboot.elf`, `eboot (2).elf`. **Convert again** creates another copy. Cancel or close to discard the current partial file and keep completed results. Failed files do not stop the queue.
+Inputs stay read-only. Existing outputs get numbered alternatives: `eboot.elf`, `eboot (2).elf`. **Convert remaining** converts only unfinished files; **Convert again** creates another copy of all. Cancel or close to discard the current partial file and keep completed results. Failed files do not stop the queue.
 
 ## Updates & privacy
 

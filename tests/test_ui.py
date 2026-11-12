@@ -72,6 +72,83 @@ def test_missing_destination_disables_conversion(window, tmp_path):
     window.add_files([source])
     window.output_edit.setText(str(tmp_path / "not-there"))
     assert not window.convert_button.isEnabled()
+    assert "not found" in window.output_hint.text()
+    (tmp_path / "not-there").mkdir()
+    window.update_actions()
+    assert window.convert_button.isEnabled()
+    assert "not found" not in window.output_hint.text()
+
+
+def test_relative_destination_is_rejected(window, tmp_path, monkeypatch):
+    source, _ = write_fixture(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    window.add_files([source])
+    window.output_edit.setText(".")
+    assert not window.convert_button.isEnabled()
+    assert "full folder path" in window.output_hint.text()
+
+
+def test_adding_files_converts_only_new_ones(window, application, tmp_path):
+    source, expected = write_fixture(tmp_path)
+    output = tmp_path / "output"
+    output.mkdir()
+    window.add_files([source])
+    window.output_edit.setText(str(output))
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    added = tmp_path / "added.self"
+    added.write_bytes(source.read_bytes())
+    window.add_files([added])
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    assert sorted(path.name for path in output.iterdir()) == ["added.elf", "sample.elf"]
+    assert window.table.item(0, 1).text() == "Converted"
+    assert window.status_label.text() == "1 converted"
+    assert window.convert_button.text() == "Convert again"
+
+
+def test_dropped_folder_adds_matching_files(window, tmp_path):
+    source, _ = write_fixture(tmp_path)
+    (tmp_path / "notes.txt").write_text("skip")
+    (tmp_path / "sample.elf").write_bytes(b"earlier output")
+    window.add_files([tmp_path])
+    assert window.sources == [source.resolve()]
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    window.add_files([empty])
+    assert "Skipped: 1" in window.status_label.text()
+
+
+def test_new_output_folder_converts_whole_queue(window, application, tmp_path):
+    source, _ = write_fixture(tmp_path)
+    first, second = tmp_path / "first", tmp_path / "second"
+    first.mkdir()
+    second.mkdir()
+    window.add_files([source])
+    window.output_edit.setText(str(first))
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    window.output_edit.setText(str(second))
+    assert window.convert_button.text() == "Convert to ELF"
+    window.start_conversion()
+    wait_for(application, lambda: window.worker is None)
+    assert [path.name for path in second.iterdir()] == ["sample.elf"]
+
+
+def test_delete_keys_remove_selected_rows(window, tmp_path):
+    from PySide6.QtGui import QKeySequence, QShortcut
+
+    # Headless X servers may not give the table keyboard focus, so trigger the shortcuts directly.
+    shortcuts = window.table.findChildren(QShortcut)
+    keys = {shortcut.key().toString() for shortcut in shortcuts}
+    assert QKeySequence(Qt.Key.Key_Backspace).toString() in keys
+    assert QKeySequence(QKeySequence.StandardKey.Delete).toString() in keys
+    for shortcut in shortcuts:
+        source, _ = write_fixture(tmp_path)
+        window.add_files([source])
+        window.table.selectRow(0)
+        shortcut.activated.emit()
+        assert window.table.rowCount() == 0
 
 
 @pytest.mark.parametrize("output_name", ["output", pytest.param("output ", marks=pytest.mark.skipif(
@@ -136,7 +213,7 @@ def test_changing_completed_queue_resets_batch_summary(window, application, tmp_
         window.clear_files()
     assert not window.results
     assert window.progress.value() == 0
-    assert window.convert_button.text() == "Convert to ELF"
+    assert window.convert_button.text() == ("Convert remaining" if change == "add" else "Convert to ELF")
     assert window.status_label.text() == ("Add files." if change == "clear" else
                                           f"Queued: {len(window.sources)}")
     assert window.queue_label.text() == f"Files · {len(window.sources)}"
@@ -214,8 +291,9 @@ def test_about_icons_open_their_links_only_on_click(application, monkeypatch):
     application.processEvents()
     assert opened == []
     assert not dialog.kofi_link.autoDefault()
+    assert dialog.owner_link.text() != dialog.upstream_link.text()
     for button in (dialog.owner_link, dialog.upstream_link, dialog.kofi_link):
-        assert not button.icon().isNull() and not button.text()
+        assert not button.icon().isNull()
         assert button.accessibleName() and button.toolTip()
         QTest.mouseClick(button, Qt.MouseButton.LeftButton)
     dialog.close()

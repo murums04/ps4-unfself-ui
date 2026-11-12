@@ -140,3 +140,23 @@ def test_short_trailer_truncation_cannot_shift_into_padding(tmp_path, missing, t
     with pytest.raises(ConversionError):
         convert_file(source, tmp_path)
     assert list(tmp_path.iterdir()) == [source]
+
+def test_locked_temporary_file_does_not_hide_the_result(tmp_path, monkeypatch):
+    source, _ = write_fixture(tmp_path)
+    original_unlink = Path.unlink
+
+    def locked_unlink(path, *args, **kwargs):
+        if path.name.startswith(".unfself-"):
+            raise PermissionError("locked by another process")
+        return original_unlink(path, *args, **kwargs)
+
+    calls = []
+
+    def cancel_after_temporary_file():
+        calls.append(None)
+        return len(calls) > 1
+
+    monkeypatch.setattr(Path, "unlink", locked_unlink)
+    with pytest.raises(ConversionCancelled):
+        convert_file(source, tmp_path, cancel=cancel_after_temporary_file)
+    assert list(tmp_path.glob(".unfself-*"))

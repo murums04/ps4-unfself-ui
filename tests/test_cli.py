@@ -43,7 +43,10 @@ def test_existing_report_prevents_conversion(tmp_path, symlink):
     report = tmp_path / "report.json"
     target = tmp_path / "missing.json"
     if symlink:
-        report.symlink_to(target)
+        try:
+            report.symlink_to(target)
+        except OSError as error:
+            pytest.skip(f"Symlinks unavailable: {error}")
     else:
         report.write_bytes(b"keep me")
     result = run_cli(source, "--output-dir", tmp_path, "--report", report)

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QUrl, Signal
-from PySide6.QtGui import QColor, QDesktopServices, QIcon
+from PySide6.QtCore import QEvent, Qt, QUrl, Signal
+from PySide6.QtGui import QColor, QDesktopServices, QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QAbstractItemView, QFileDialog, QFrame, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QMainWindow, QPlainTextEdit, QProgressBar,
@@ -15,6 +15,25 @@ from .jobs import ConversionWorker
 from .native_theme import install_native_theme
 from .theme import STYLE
 from .updates import UpdateChecker
+
+# Folder drops skip .elf so earlier outputs next to their inputs are not queued again.
+FOLDER_SUFFIXES = {".self", ".bin", ".sprx"}
+OUTPUT_HINT = "Originals unchanged. Duplicate outputs numbered."
+
+
+def expand_folders(paths, suffixes):
+    """Yield dropped files, plus matching files directly inside dropped folders."""
+    for path in map(Path, paths):
+        try:
+            if path.is_dir():
+                matches = sorted(child for child in path.iterdir()
+                                 if child.suffix.lower() in suffixes and child.is_file())
+                if matches:
+                    yield from matches
+                    continue
+        except OSError:
+            pass
+        yield path
 
 
 def label(text: str, name: str = "", wrap=False) -> QLabel:
@@ -76,6 +95,9 @@ class MainWindow(QMainWindow):
         self.worker = None
         self.close_after_cancel = False
         self.results = {}
+        self.completed: set[Path] = set()
+        self.batch_rows: list[int] = []
+        self.setAcceptDrops(True)
         self.setWindowTitle(f"murums PS4 Unfself UI · {__version__}")
         self.setWindowIcon(QIcon(str(asset_path("icon.svg"))))
         self.resize(1020, 780)
@@ -137,12 +159,19 @@ class MainWindow(QMainWindow):
         self.table.setShowGrid(False)
         self.table.verticalHeader().hide()
         self.table.verticalHeader().setDefaultSectionSize(44)
+        self.table.horizontalHeader().setDefaultAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
         self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         self.table.setColumnWidth(1, 125)
         self.table.setMinimumHeight(100)
         self.table.itemSelectionChanged.connect(self.update_actions)
+        # macOS labels Backspace as "delete", so both keys remove selected rows.
+        for key in (QKeySequence(QKeySequence.StandardKey.Delete), QKeySequence(Qt.Key.Key_Backspace)):
+            remove_shortcut = QShortcut(key, self.table)
+            remove_shortcut.setContext(Qt.ShortcutContext.WidgetShortcut)
+            remove_shortcut.activated.connect(self.remove_selected)
         self.details = QPlainTextEdit()
         self.details.setReadOnly(True)
         self.details.setAccessibleName("Conversion details")
@@ -169,13 +198,14 @@ class MainWindow(QMainWindow):
         self.output_edit.setPlaceholderText("Choose an ELF output folder")
         self.output_edit.setAccessibleName("Output folder")
         output_label.setBuddy(self.output_edit)
-        self.output_edit.textChanged.connect(self.update_actions)
+        self.output_edit.textChanged.connect(self.output_changed)
         output_row.addWidget(self.output_edit, 1)
         self.browse_button = QPushButton("Browse…")
         self.browse_button.clicked.connect(self.choose_output)
         output_row.addWidget(self.browse_button)
         output_layout.addLayout(output_row)
-        output_layout.addWidget(label("Originals unchanged. Duplicate outputs numbered.", "Hint"))
+        self.output_hint = label(OUTPUT_HINT, "Hint")
+        output_layout.addWidget(self.output_hint)
         layout.addWidget(panel)
 
         self.progress = QProgressBar()
@@ -222,7 +252,7 @@ class MainWindow(QMainWindow):
             return
         previous_count = len(self.sources)
         skipped = 0
-        for path in paths:
+        for path in expand_folders(paths, FOLDER_SUFFIXES):
             try:
                 path = Path(path).resolve(strict=True)
                 if not path.is_file() or path in self.sources:
@@ -242,7 +272,6 @@ class MainWindow(QMainWindow):
         if len(self.sources) != previous_count:
             self.results.clear()
             self.progress.setValue(0)
-            self.convert_button.setText("Convert to ELF")
         self.queue_label.setText(f"Files · {len(self.sources)}")
         self.status_label.setText(f"Queued: {len(self.sources)}" +
                                   (f" · Skipped: {skipped} duplicates/non-files" if skipped else ""))
@@ -255,10 +284,10 @@ class MainWindow(QMainWindow):
         for row in rows:
             self.sources.pop(row)
             self.table.removeRow(row)
+        self.completed &= set(self.sources)
         if rows:
             self.results.clear()
             self.progress.setValue(0)
-            self.convert_button.setText("Convert to ELF")
         self.queue_label.setText(f"Files · {len(self.sources)}")
         self.status_label.setText(f"Queued: {len(self.sources)}")
         self.update_actions()
@@ -268,12 +297,12 @@ class MainWindow(QMainWindow):
             return
         self.sources.clear()
         self.results.clear()
+        self.completed.clear()
         self.table.setRowCount(0)
         self.details.clear()
         self.progress.setValue(0)
         self.queue_label.setText("Files · 0")
         self.status_label.setText("Add files.")
-        self.convert_button.setText("Convert to ELF")
         self.update_actions()
 
     def choose_output(self):
@@ -281,12 +310,26 @@ class MainWindow(QMainWindow):
         if path:
             self.output_edit.setText(path)
 
+    def output_changed(self):
+        # Results in another folder do not count as done for the new one.
+        self.completed.clear()
+        self.update_actions()
+
     def update_actions(self):
         busy = self.worker is not None
+        text = self.output_edit.text()
         try:
-            valid_output = bool(self.output_edit.text()) and Path(self.output_edit.text()).expanduser().is_dir()
+            folder = Path(text).expanduser()
+            absolute = folder.is_absolute()
+            valid_output = bool(text) and absolute and folder.is_dir()
         except (OSError, ValueError, RuntimeError):
-            valid_output = False
+            absolute = valid_output = False
+        if not text or valid_output:
+            self.output_hint.setText(OUTPUT_HINT)
+        elif not absolute:
+            self.output_hint.setText("Enter a full folder path or choose Browse…")
+        else:
+            self.output_hint.setText("Folder not found. Choose an existing folder.")
         self.add_button.setEnabled(not busy)
         self.drop_area.setEnabled(not busy)
         self.output_edit.setEnabled(not busy)
@@ -296,6 +339,11 @@ class MainWindow(QMainWindow):
         self.convert_button.setEnabled(not busy and bool(self.sources) and valid_output)
         self.open_button.setEnabled(valid_output)
         self.cancel_button.setVisible(busy)
+        done = sum(path in self.completed for path in self.sources)
+        if self.sources and done == len(self.sources):
+            self.convert_button.setText("Convert again")
+        else:
+            self.convert_button.setText("Convert remaining" if done else "Convert to ELF")
 
     def start_conversion(self):
         if self.worker is not None or not self.convert_button.isEnabled():
@@ -303,9 +351,15 @@ class MainWindow(QMainWindow):
         self.results = {}
         self.details.clear()
         self.progress.setValue(0)
-        for row in range(len(self.sources)):
+        # Only unfinished rows run again; a fully converted queue converts every file once more.
+        self.batch_rows = [row for row, path in enumerate(self.sources) if path not in self.completed]
+        if not self.batch_rows:
+            self.completed.clear()
+            self.batch_rows = list(range(len(self.sources)))
+        for row in self.batch_rows:
             self.set_row(row, "Waiting", "—")
-        self.worker = ConversionWorker(list(self.sources), Path(self.output_edit.text()).expanduser(), self)
+        batch = [self.sources[row] for row in self.batch_rows]
+        self.worker = ConversionWorker(batch, Path(self.output_edit.text()).expanduser(), self)
         self.worker.file_started.connect(self.file_started)
         self.worker.progress_changed.connect(self.update_progress)
         self.worker.file_finished.connect(self.file_finished)
@@ -315,12 +369,20 @@ class MainWindow(QMainWindow):
         self.update_actions()
         self.worker.start()
 
-    def file_started(self, row):
-        self.set_row(row, "Converting", "—")
-        self.status_label.setText(f"Converting {row + 1} of {len(self.sources)} · {self.sources[row].name}")
+    def batch_row(self, index):
+        # Worker signals count within the running batch; outside a batch they are queue rows.
+        return self.batch_rows[index] if self.batch_rows else index
 
-    def update_progress(self, row, percent):
-        self.progress.setValue(int((row * 100 + percent) / max(len(self.sources), 1)))
+    def batch_size(self):
+        return max(len(self.batch_rows) or len(self.sources), 1)
+
+    def file_started(self, index):
+        row = self.batch_row(index)
+        self.set_row(row, "Converting", "—")
+        self.status_label.setText(f"Converting {index + 1} of {self.batch_size()} · {self.sources[row].name}")
+
+    def update_progress(self, index, percent):
+        self.progress.setValue(int((index * 100 + percent) / self.batch_size()))
 
     def set_row(self, row, state, result):
         colors = {"Converted": "#73e0be", "Failed": "#ffb4b4", "Cancelled": "#d7bd8a", "Converting": "#70cfee"}
@@ -328,12 +390,16 @@ class MainWindow(QMainWindow):
         self.table.item(row, 1).setForeground(QColor(colors.get(state, "#a7bbce")))
         self.table.item(row, 2).setText(result)
 
-    def file_finished(self, row, state, detail):
+    def file_finished(self, index, state, detail):
+        row = self.batch_row(index)
         self.results[row] = state
+        if state == "Converted":
+            self.completed.add(self.sources[row])
         self.set_row(row, state, Path(detail).name if state == "Converted" else detail)
         self.table.item(row, 2).setToolTip(detail)
         self.details.appendPlainText(f"{state} · {self.sources[row].name}\n{detail}\n")
-        self.progress.setValue(int((row + 1) * 100 / max(len(self.sources), 1)))
+        if state != "Cancelled":
+            self.progress.setValue(int((index + 1) * 100 / self.batch_size()))
         if state == "Failed":
             self.details.show()
             self.details_button.setText("Hide details")
@@ -342,9 +408,11 @@ class MainWindow(QMainWindow):
         worker = self.worker
         self.worker = None
         worker.deleteLater()
-        counts = {state: list(self.results.values()).count(state) for state in ("Converted", "Failed", "Cancelled")}
-        self.status_label.setText(" · ".join(f"{counts[state]} {state.lower()}" for state in counts))
-        self.convert_button.setText("Convert again")
+        self.batch_rows = []
+        states = list(self.results.values())
+        counts = [f"{states.count(state)} {state.lower()}" for state in ("Converted", "Failed", "Cancelled")
+                  if states.count(state)]
+        self.status_label.setText(" · ".join(counts) or "Nothing converted.")
         self.update_actions()
         if self.close_after_cancel:
             self.close()
@@ -372,6 +440,22 @@ class MainWindow(QMainWindow):
 
     def refresh_update_notice(self):
         self.update_notice.setVisible(self.update_checker.release is not None)
+
+    def dragEnterEvent(self, event):
+        # Drops outside the drop area, such as onto the file list, add files too.
+        if self.worker is None and event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        if self.worker is None:
+            self.add_files([Path(url.toLocalFile()) for url in event.mimeData().urls() if url.isLocalFile()])
+            event.acceptProposedAction()
+
+    def changeEvent(self, event):
+        # Recheck the output folder after it was created or removed in another app.
+        if event.type() == QEvent.Type.ActivationChange and self.isActiveWindow():
+            self.update_actions()
+        super().changeEvent(event)
 
     def closeEvent(self, event):
         if self.worker is not None:

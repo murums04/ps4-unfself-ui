@@ -22,7 +22,6 @@ QPushButton#Primary:hover { background: #83ead8; }
 QPushButton#Primary:disabled { background: #203e40; color: #70918d; border-color: #203e40; }
 QPushButton#Quiet { background: transparent; border: 1px solid transparent; color: #b2c1d2; }
 QPushButton#Quiet:hover { background: #1b2a3c; }
-QPushButton#IconButton { padding: 7px; }
 QPushButton#SupportLink { background: transparent; border: 1px solid transparent; padding: 4px; }
 QPushButton#SupportLink:hover { background: #1b2a3c; }
 QPushButton#SupportLink:focus { border: 2px solid #57ddc5; }
@@ -31,7 +30,10 @@ QLineEdit:disabled { color: #77899c; }
 QTableWidget { background: #101a27; alternate-background-color: #131f2e; border: 1px solid #243244; border-radius: 8px; gridline-color: transparent; selection-background-color: #244c59; }
 QTableWidget::item { padding: 8px; border: 0; }
 QTableWidget::item:selected { background: #244c59; color: #ffffff; }
-QHeaderView::section { background: #152235; color: #a7bbce; border: 0; padding: 10px 8px; font-weight: 600; }
+QHeaderView::section { background: #152235; color: #a7bbce; border: 0; padding: 10px 8px 10px 11px; font-weight: 600; }
+QHeaderView { background: transparent; border: 0; }
+QHeaderView::section:first { border-top-left-radius: 7px; }
+QHeaderView::section:last { border-top-right-radius: 7px; }
 QTableCornerButton::section { background: #152235; border: 0; }
 QProgressBar { background: #1a2a3c; border: 0; border-radius: 3px; min-height: 5px; max-height: 5px; }
 QProgressBar::chunk { background: #57ddc5; border-radius: 3px; }

@@ -16,14 +16,14 @@ On filesystems without hard links, a forced process exit during the final copy c
 2026-10-16 · Windows 11 Pro x64, build 26300 · Python 3.12.14 · PySide6 6.10.3.
 
 - **113 tests:** exact reconstruction, equal-sized/reordered segments, both library-trailer length conventions, 1–15-byte truncations, Unicode paths, collisions/cancellation; Qt drop/keyboard/batch workflows; POSIX hard links, Debian staging, Linux library provenance and GUI startup.
-- **Updates:** versions/platforms, exact GitHub URLs, drafts/prereleases, invalid/oversized JSON, HTTP errors/rate limits, responsive timeouts and retries; About links and browser failures. Mouse/keyboard checks retain focus and ignore duplicate requests without opening links. Packaged HTTPS returned “no public release”; future downloads use controlled responses.
+- **Updates:** versions/platforms, exact GitHub URLs, drafts/prereleases, invalid/oversized JSON, HTTP errors/rate limits, responsive timeouts and retries; About links and browser failures. Mouse/keyboard checks retain focus and ignore duplicate requests without opening links.
 - **UI:** 1020 × 780 and minimum 860 × 660, details/errors at 100%/150%; packaged title bars and About inspected.
 - **Packages:** GUI/conversion without development Python on PATH, invalid-input rejection, per-user install/reinstall/uninstall and shortcut/registry cleanup.
-- **Review:** fixed trailer truncation, an ICU DLL collected from PATH and the About focus jump. The earlier independent platform/update reviews covered 104 tests; the current suite includes six focus regressions.
+- **Fixes:** trailer truncation, an ICU DLL collected from PATH and an About focus jump, with six focus regression tests.
 
 ## Real input
 
-Two copies of one 93,825,704-byte SELF produced a 93,667,640-byte ELF matching the user's reference, including its 2,088-byte trailer. The packaged EXE matched too. Two encrypted modules failed as expected; an ELF input needed no conversion. Before/after hashes matched for all five inputs. No game data enters the release.
+Two copies of one 93,825,704-byte SELF produced a 93,667,640-byte ELF matching a reference conversion, including its 2,088-byte trailer. The packaged EXE matched too. Two encrypted modules failed as expected; an ELF input needed no conversion. Before/after hashes matched for all five inputs. No game data enters the release.
 
 The comparison verifies reconstruction of these inputs. Windows binaries are unsigned. SHA256SUMS.txt identifies checked packages.
 
